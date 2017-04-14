@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>QUnit basic example</title>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.18.0.css">
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="http://code.jquery.com/qunit/qunit-1.18.0.js"></script>
+<script src="js/blanket.min.js"></script>
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/jqListbox.plugin-1.1.js" data-cover></script>
+<script>
+
+    function getUl() {
+        var el = $(document.createElement('ul'));
+        return el;
+    }
+
+    QUnit.test("Option getter: itemSelector is li by default", function (assert) {
+        var el = getUl();
+        el.jqListbox();
+        assert.equal(el.jqListbox('itemSelector'), 'li');
+    });
+
+    QUnit.test("Option setter: itemSelector is a", function (assert) {
+        var el = getUl();
+        el.jqListbox();
+        el.jqListbox('itemSelector', 'a');
+        assert.equal(el.jqListbox('itemSelector'), 'a');
+    });
+
+    QUnit.test("Set itemSelector via passed options object", function (assert) {
+        var el = getUl();
+        el.jqListbox({itemSelector: 'a'});
+        assert.equal(el.jqListbox('itemSelector'), 'a');
+    });
+
+    QUnit.test("Initial values are set from array", function (assert) {
+        var el = getUl();
+        var initialValues = ['item1', 'item2', 'item3'];
+        el.jqListbox({initialValues: initialValues});
+        assert.deepEqual(el.jqListbox('getAsArray'), initialValues);
+    });
+
+    QUnit.test("Initial values are set from encoded values", function (assert) {
+        var el = getUl();
+        var initialValues = ['item1', 'item2', 'item3'];
+        el.jqListbox({initialEncodedValues: JSON.stringify(initialValues)});
+        assert.deepEqual(el.jqListbox('getAsArray'), initialValues);
+    });
+
+    QUnit.test("Initial values are set from target input", function (assert) {
+        var el = getUl();
+        var initialValues = ['item1', 'item2', 'item3'];
+        $('#listbox-value').val(JSON.stringify(initialValues));
+        el.jqListbox();
+        assert.deepEqual(el.jqListbox('getAsArray'), initialValues);
+        $('#listbox-value').val('');
+    });
+
+    QUnit.test("Target input can be changed", function (assert) {
+        var el = getUl();
+        var initialValues = ['item1', 'item2', 'item3'];
+        $('#listbox-value-2').val(JSON.stringify(initialValues));
+        el.jqListbox({
+            targetInput: '#listbox-value-2'
+        });
+        assert.deepEqual(el.jqListbox('getAsArray'), initialValues);
+        el.jqListbox('insert', 'test');
+        initialValues.push('test');
+        assert.deepEqual(el.jqListbox('getAsArray'), initialValues);
+    });
+
+    QUnit.test("Insert inserts new element", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: []
+        });
+        var l = el.jqListbox('insert', 'test');
+        assert.equal(l, 1);
+        assert.deepEqual(el.jqListbox('getAsArray'), ['test']);
+        el.jqListbox('insert', 'test');
+        assert.deepEqual(el.jqListbox('getAsArray'), ['test', 'test']);
+    });
+
+    QUnit.test("Count returning the number of items", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: []
+        });
+        var l = el.jqListbox('insert', 'test');
+        assert.equal(l, 1);
+        assert.equal(el.jqListbox('count'), 1);
+
+        var l = el.jqListbox('insert', 'test');
+        assert.equal(l, 2);
+        assert.equal(el.jqListbox('count'), 2);
+    });
+
+    QUnit.test("Reset clears listbox", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: []
+        });
+        el.jqListbox('insert', 'test');
+        assert.deepEqual(el.jqListbox('getAsArray'), ['test']);
+        el.jqListbox('reset');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+    });
+
+    QUnit.test("Reset resets to the original state", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: ['test']
+        });
+        el.jqListbox('insert', 'test2');
+        assert.deepEqual(el.jqListbox('getAsArray'), ['test', 'test2']);
+        el.jqListbox('reset');
+        assert.deepEqual(el.jqListbox('getAsArray'), ['test']);
+    });
+
+    QUnit.test("InsertAt inserts new element into position", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('insertAt', {'title': 'dummy'}, 1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'dummy'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('insertAt', {'title': 'dummy2'}, -2);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'dummy'},
+            {'title': 'dummy2'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('insertAt', {'title': 'LASTELEMENT'}, 5);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'dummy'},
+            {'title': 'dummy2'},
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'LASTELEMENT'}
+        ]);
+    });
+
+    QUnit.test("InsertMulti inserts new elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: []
+        });
+        var l = el.jqListbox('insertMulti', ['A', 'B', 'C', 'D']);
+        assert.equal(l, 4);
+        assert.deepEqual(el.jqListbox('getAsArray'), ['A', 'B', 'C', 'D']);
+    });
+
+    QUnit.test("InsertMultiAt inserts new elements into position", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: ['A', 'B', 'C', 'D']
+        });
+        var l = el.jqListbox('insertMultiAt', ['X', 'Y'], 2);
+        assert.equal(l, 6);
+        assert.deepEqual(el.jqListbox('getAsArray'), ['A', 'B', 'X', 'Y', 'C', 'D']);
+        el.jqListbox('insertMultiAt',['LASTELEMENT'], 6);
+        assert.deepEqual(el.jqListbox('getAsArray'), ['A', 'B', 'X', 'Y', 'C', 'D', 'LASTELEMENT']);
+    });
+
+    QUnit.test("UpdateAt updateselement in position", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('updateAt', {'title': 'dummy'}, 1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'dummy'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('updateAt', {'title': 'dummy2'}, -1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'dummy'},
+            {'title': 'dummy2'}
+        ]);
+    });
+
+    QUnit.test("removeByIndex removes element in position", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('removeByIndex', 1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'third'}
+        ]);
+
+        el.jqListbox('removeByIndex', -1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+    });
+
+    QUnit.test("getTargetValue returns the encoded value", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        var targetValue = el.jqListbox('getTargetValue');
+        assert.deepEqual(targetValue, '[{"title":"first"},{"title":"second"},{"title":"third"}]');
+    });
+
+    QUnit.test("getTargetValue calls custom encoder", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            listboxValueEncoder: function (items) {
+                var tmp = [];
+                for (var i in items) {
+                    tmp.push(items[i].title);
+                }
+                return JSON.stringify(tmp);
+            }
+        });
+        var targetValue = el.jqListbox('getTargetValue');
+        assert.deepEqual(targetValue, '["first","second","third"]');
+    });
+
+    QUnit.test("select selects item by position, deselect deselects", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), [1]);
+        assert.equal(el.jqListbox('isSelected', 1), true);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+        el.jqListbox('deselect', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), []);
+        assert.equal(el.jqListbox('isSelected', 1), false);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+    });
+
+    QUnit.test("selectAll selects all elements, deselectAll deselects all", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('selectAll');
+        assert.deepEqual(el.jqListbox('getSelected'), [0, 1, 2]);
+        assert.equal(el.jqListbox('isSelected', 0), true);
+        assert.equal(el.jqListbox('isSelected', 1), true);
+        assert.equal(el.jqListbox('isSelected', 2), true);
+        el.jqListbox('deselectAll');
+        assert.deepEqual(el.jqListbox('getSelected'), []);
+    });
+
+    QUnit.test("update updates selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 1);
+        el.jqListbox('update', {'title': 'updated'});
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'updated'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('selectAll');
+        el.jqListbox('update', {'title': 'updated'});
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'updated'},
+            {'title': 'updated'},
+            {'title': 'updated'}
+        ]);
+        el.jqListbox('deselectAll');
+        el.jqListbox('update', {'title': 'new'});
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'updated'},
+            {'title': 'updated'},
+            {'title': 'updated'}
+        ]);
+    });
+
+    QUnit.test("updateMulti updates selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('select', 1);
+        el.jqListbox('updateMulti', [{'title': 'updated1'}, {'title': 'updated2'}]);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'updated1'},
+            {'title': 'updated2'},
+            {'title': 'third'}
+        ]);
+    });
+
+    QUnit.test("remove removed selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('select', 2);
+        el.jqListbox('remove');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'}
+        ]);
+        el.jqListbox('select', 0);
+        el.jqListbox('remove');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+    });
+
+    QUnit.test("moveup moves up selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'first'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+    });
+
+    QUnit.test("moveup does nothing in single element list", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+    });
+
+    QUnit.test("moveup does nothing in zero element list", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: []
+        });
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+        el.jqListbox('select', 0);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+    });
+
+    QUnit.test("moveup moves up multiple selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('select', 2);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'third'},
+            {'title': 'first'},
+            {'title': 'second'}
+        ]);
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('selectAll');
+        el.jqListbox('moveup');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+    });
+
+    QUnit.test("moveupByIndex moves up item by position", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('moveupByIndex', 0);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+        el.jqListbox('moveupByIndex', 0);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'third'},
+            {'title': 'first'},
+            {'title': 'second'}
+        ]);
+        el.jqListbox('moveupByIndex', 1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'third'},
+            {'title': 'second'}
+        ]);
+    });
+
+    QUnit.test("movedown moves down selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'first'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+    });
+
+    QUnit.test("movedown does nothing in single element list", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'}
+        ]);
+    });
+
+    QUnit.test("movedown does nothing in zero element list", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: []
+        });
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+        el.jqListbox('select', 0);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+    });
+
+    QUnit.test("movedown moves down multiple selected element(s)", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('select', 2);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'third'},
+            {'title': 'first'},
+            {'title': 'second'}
+        ]);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('selectAll');
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'third'},
+            {'title': 'first'},
+            {'title': 'second'}
+        ]);
+        el.jqListbox('deselectAll');
+        el.jqListbox('select', 0);
+        el.jqListbox('select', 1);
+        el.jqListbox('movedown');
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'third'},
+            {'title': 'first'}
+        ]);
+    });
+
+    QUnit.test("movedownByIndex moves down item by position", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
+        el.jqListbox('movedownByIndex', 0);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'first'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('movedownByIndex', 0);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'second'},
+            {'title': 'third'}
+        ]);
+        el.jqListbox('movedownByIndex', 1);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'first'},
+            {'title': 'third'},
+            {'title': 'second'}
+        ]);
+        el.jqListbox('movedownByIndex', 2);
+        assert.deepEqual(el.jqListbox('getAsArray'), [
+            {'title': 'second'},
+            {'title': 'first'},
+            {'title': 'third'}
+        ]);
+    });
+
+    QUnit.test("insert adds DOM elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [],
+            selectedClass: false
+        });
+        el.jqListbox('insert', 'test');
+        assert.equal(el.html(), '<li>test</li>');
+        el.jqListbox('insert', 'test2');
+        assert.equal(el.html(), '<li>test</li><li>test2</li>');
+        el.jqListbox('insertAt', 'test3', 0);
+        assert.equal(el.html(), '<li>test3</li><li>test</li><li>test2</li>');
+    });
+    QUnit.test("rerender can be called after custom itemRenderer is added", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [],
+            selectedClass: false
+        });
+        el.jqListbox('insert', 'test');
+        assert.equal(el.html(), '<li>test</li>');
+        el.jqListbox('itemRenderer', function (item) {
+            return '<li>#' + item + '</li>';
+        });
+        el.jqListbox('render');
+        assert.equal(el.html(), '<li>#test</li>');
+        el.jqListbox('clear');
+        assert.equal(el.html(), '');
+    });
+    QUnit.test("update updates DOM elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [],
+            selectedClass: false
+        });
+        el.jqListbox('insert', 'test');
+        assert.equal(el.html(), '<li>test</li>');
+        el.jqListbox('updateAt', 'test2', 0);
+        assert.equal(el.html(), '<li>test2</li>');
+        el.jqListbox('select', 0);
+        el.jqListbox('update', 'test3');
+        assert.equal(el.html(), '<li>test3</li>');
+    });
+    QUnit.test("remove removes DOM elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D',
+            ],
+            selectedClass: false
+        });
+        assert.equal(el.html(), '<li>A</li><li>B</li><li>C</li><li>D</li>');
+        el.jqListbox('removeByIndex', 0);
+        assert.equal(el.html(), '<li>B</li><li>C</li><li>D</li>');
+        el.jqListbox('select', 1);
+        el.jqListbox('remove');
+        assert.equal(el.html(), '<li>B</li><li>D</li>');
+    });
+    QUnit.test("moveup updates DOM elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D'
+            ],
+            selectedClass: false
+        });
+        el.jqListbox('select', 1);
+        el.jqListbox('moveup');
+        assert.equal(el.html(), '<li>B</li><li>A</li><li>C</li><li>D</li>');
+        el.jqListbox('moveup');
+        assert.equal(el.html(), '<li>A</li><li>C</li><li>D</li><li>B</li>');
+        el.jqListbox('moveupByIndex', 3);
+        assert.equal(el.html(), '<li>A</li><li>C</li><li>B</li><li>D</li>');
+    });
+    QUnit.test("movedown updates DOM elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D'
+            ],
+            selectedClass: false
+        });
+        el.jqListbox('select', 1);
+        el.jqListbox('movedown');
+        assert.equal(el.html(), '<li>A</li><li>C</li><li>B</li><li>D</li>');
+        el.jqListbox('movedown');
+        assert.equal(el.html(), '<li>A</li><li>C</li><li>D</li><li>B</li>');
+        el.jqListbox('movedownByIndex', 0);
+        assert.equal(el.html(), '<li>C</li><li>A</li><li>D</li><li>B</li>');
+    });
+    QUnit.test("multiselect option is used", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D'
+            ],
+            selectedClass: false,
+            multiselect: false
+        });
+        assert.equal(el.jqListbox('countSelected'), 0);
+        el.jqListbox('select', 1);
+        assert.equal(el.jqListbox('countSelected'), 1);
+        el.jqListbox('select', 2);
+        assert.equal(el.jqListbox('countSelected'), 1);
+        el.jqListbox('multiselect', true);
+        el.jqListbox('select', 1);
+        assert.equal(el.jqListbox('countSelected'), 2);
+    });
+    QUnit.test("getSelectedJQueryItems returns the selected elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D'
+            ],
+            selectedClass: false
+        });
+        var jq = el.jqListbox('getSelectedJQueryItems');
+        assert.equal(jq.length, 0);
+        el.jqListbox('select', 1);
+        var jq = el.jqListbox('getSelectedJQueryItems');
+        assert.equal(jq.length, 1);
+        assert.equal(jq.first().text(), 'B');
+        el.jqListbox('select', 2);
+        var jq = el.jqListbox('getSelectedJQueryItems');
+        assert.equal(jq.length, 2);
+        assert.equal(jq.first().text(), 'B');
+        assert.equal(jq.first().next().text(), 'C');
+    });
+    QUnit.test("itemWalk called on the elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D'
+            ],
+            selectedClass: false
+        });
+        el.jqListbox('itemWalk', function (item, pos, el, jqListbox) {
+            item = pos + item;
+            jqListbox.items[pos] = item;
+        });
+        el.jqListbox('render');
+        assert.equal(el.html(), '<li>0A</li><li>1B</li><li>2C</li><li>3D</li>');
+    });
+    QUnit.test("selectedWalk called on selected elements", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'A', 'B', 'C', 'D'
+            ],
+            selectedClass: false
+        });
+        el.jqListbox('select', 1);
+        el.jqListbox('select', 2);
+        el.jqListbox('selectedWalk', function (item, pos, el, jqListbox) {
+            item = pos + item;
+            jqListbox.items[pos] = item;
+        });
+        el.jqListbox('render');
+        assert.equal(el.html(), '<li>A</li><li>1B</li><li>2C</li><li>D</li>');
+    });
+    QUnit.test("selected class is used", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            selectedClass: 'test'
+        });
+        el.jqListbox('select', 1);
+        var jq = el.jqListbox('getSelectedJQueryItems');
+        assert.equal(jq.first().attr('class'), 'test');
+    });
+    QUnit.test("custom itemRenderer selected class is used", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            itemRenderer: function (item, pos, jqListbox) {
+                var j = $('<li>' + item.title + '</li>');
+                if (jqListbox.isSelected(pos)) {
+                    j.addClass('test1');
+                }
+                return j;
+            },
+            selectedClass: false
+        });
+        el.jqListbox('select', 1);
+        var jq = el.jqListbox('getSelectedJQueryItems');
+        assert.equal(jq.first().attr('class'), 'test1');
+    });
+    QUnit.test("custom listboxValueEncoder is used", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'first',
+                'second',
+                'third'
+            ],
+            listboxValueEncoder: function (items) {
+                return 'dummy';
+            }
+        });
+        assert.equal(el.jqListbox('getTargetValue'), 'dummy');
+        el.jqListbox('listboxValueEncoder', function (items) {
+            return items.join(',');
+        });
+        assert.equal(el.jqListbox('getTargetValue'), 'first,second,third');
+    });
+    QUnit.test("custom listboxValueDecoder is used", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [],
+            listboxValueDecoder: function (values) {
+                return values.split(',');
+            }
+        });
+        el.jqListbox('setFromTargetValue', 'dummy,test');
+        assert.deepEqual(el.jqListbox('getAsArray'), ['dummy', 'test']);
+    });
+    QUnit.test("init callbacks are called", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            onBeforeInit: function (jq) {
+                assert.ok('onBeforeInit is called');
+            },
+            onAfterInit: function (jq) {
+                assert.ok('onBeforeInit is called');
+            }
+        });
+        assert.expect(2);
+    });
+    QUnit.test("insert callbacks are called", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            onBeforeItemInsert: function (item, jq) {
+                assert.ok('onBeforeItemInsert is called');
+                assert.equal(item[0], 'test');
+            },
+            onAfterItemInsert: function (item, el, jq) {
+                assert.ok('onAfterItemInsert is called');
+            }
+        });
+        el.jqListbox('insert', 'test');
+        el.jqListbox('insertAt', 'test', 0);
+        el.jqListbox('insertMulti', ['test', 'test2']);
+        el.jqListbox('insertMultiAt', ['test', 'test2'], 1);
+        assert.expect(12);
+    });
+    QUnit.test("insert callbacks are functioning - avoid insertion", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [],
+            onBeforeItemInsert: function (item, jq) {
+                assert.ok('onBeforeItemInsert is called');
+                if (item[0] === 'test') {
+                    return false;
+                }
+            }
+        });
+        el.jqListbox('insert', 'test');
+        assert.expect(2);
+        assert.equal(el.jqListbox('count'), 0);
+    });
+    QUnit.test("insert callbacks are functioning - do insertion", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [],
+            onBeforeItemInsert: function (item, jq) {
+                assert.ok('onBeforeItemInsert is called');
+                if (item[0] !== 'test') {
+                    return false;
+                }
+            },
+            onAfterItemInsert: function (item, el, jq) {
+                assert.ok('onAfterItemInsert is called');
+            }
+        });
+        el.jqListbox('insert', 'test');
+        assert.equal(el.jqListbox('count'), 1);
+        assert.expect(3);
+    });
+    QUnit.test("update callbacks are functioning - avoid update", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test'
+            ],
+            onBeforeItemUpdate: function (item, updateTo, el, jq) {
+                assert.ok('onBeforeItemUpdate is called');
+                if (item[0] === 'test') {
+                    return false;
+                }
+            }
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('update', 'dummy');
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test');
+        el.jqListbox('updateAt', 'test', 0);
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test');
+        assert.expect(4);
+    });
+    QUnit.test("update callbacks are functioning - do update", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: ['dummy'],
+            onBeforeItemUpdate: function (item, updateTo, jq) {
+                assert.ok('onBeforeItemUpdate is called');
+                if (item[0] !== 'dummy') {
+                    return false;
+                }
+            },
+            onAfterItemUpdate: function (item, updateTo, jq) {
+                assert.ok('onAfterItemUpdate is called');
+            }
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('update', 'test');
+        assert.equal(el.jqListbox('count'), 1);
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test');
+        assert.expect(4);
+    });
+    QUnit.test("remove callbacks are functioning - avoid remove", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onBeforeItemRemove: function (item, jq) {
+                assert.ok('onBeforeItemRemove is called');
+                if (jq.getItemByIndex(item[0]) === 'test') {
+                    return false;
+                }
+            }
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('remove');
+        assert.equal(el.jqListbox('count'), 2);
+        assert.expect(2);
+    });
+    QUnit.test("remove callbacks are functioning - do remove", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onBeforeItemRemove: function (item, jq) {
+                assert.ok('onBeforeItemRemove is called');
+                if (jq.getItemByIndex(item[0]) !== 'dummy') {
+                    return false;
+                }
+            },
+            onAfterItemRemove: function (item, jq) {
+                assert.ok('onAfterItemRemove is called');
+            }
+        });
+        el.jqListbox('select', 1);
+        el.jqListbox('remove');
+        assert.equal(el.jqListbox('count'), 1);
+        assert.expect(3);
+    });
+    QUnit.test("clear callbacks are functioning - avoid clear", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onBeforeClear: function (jq) {
+                assert.ok('onBeforeClear is called');
+                return false;
+            }
+        });
+        el.jqListbox('clear');
+        assert.equal(el.jqListbox('count'), 2);
+        assert.expect(2); // clear is called on reset
+    });
+    QUnit.test("clear callbacks are functioning - do clear", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onBeforeClear: function (jq) {
+                assert.ok('onBeforeClear is called');
+            },
+            onAfterClear: function (jq) {
+                assert.ok('onAfterClear is called');
+            }
+        });
+        el.jqListbox('clear');
+        assert.equal(el.jqListbox('count'), 0);
+        assert.expect(3);
+    });
+    QUnit.test("render callbacks are functioning - do render", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onBeforeRender: function (jq) {
+                assert.ok('onBeforeRender is called');
+            },
+            onAfterRender: function (jq) {
+                assert.ok('onAfterRender is called');
+            }
+        });
+        el.jqListbox('render');
+        assert.expect(4); // init + render
+    });
+    QUnit.test("render callbacks are functioning - avoid render", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onBeforeRender: function (jq) {
+                assert.ok('onBeforeRender is called');
+                return false;
+            }
+        });
+        el.jqListbox('render');
+        assert.expect(2); // init + render
+    });
+    QUnit.test("onchanged callback is working", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'dummy'
+            ],
+            onChanged: function (name, jq) {
+                assert.ok('onChanged is called');
+            }
+        });
+        el.jqListbox('insert', 'test2');
+        el.jqListbox('select', 0);
+        el.jqListbox('update', 'test3');
+        el.jqListbox('remove');
+        el.jqListbox('select', 0);
+        el.jqListbox('select', 1);
+        el.jqListbox('updateMulti', ['A','B']);
+        el.jqListbox('moveup');
+        el.jqListbox('movedown');
+        assert.expect(6); // 5 + init
+    });
+    QUnit.test("listboxValueDecoder should return zero array when empty value is passed", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialEncodedValues: ''
+        });
+        assert.deepEqual(el.jqListbox('getAsArray'), []);
+    });
+    QUnit.test("getJQueryItemByIndex returns a jQuery item", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialValues: [
+                    'test',
+                    'test2'
+            ]
+        });
+        assert.equal(el.jqListbox('getJQueryItemByIndex', 1).text(), 'test2');
+    });
+    QUnit.test("switchElements switches two elements #1", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el.jqListbox('switchElements', 0, 1);
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test2');
+    });
+    QUnit.test("switchElements switches two elements #2", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el.jqListbox('switchElements', 1, 0);
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test2');
+    });
+    QUnit.test("switchElements switches selected elements #1", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el.jqListbox('select', 0);
+        el.jqListbox('switchElements', 0, 2);
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test3');
+        assert.equal(el.jqListbox('isSelected', 0), false);
+        assert.equal(el.jqListbox('isSelected', 2), true);
+    });
+    QUnit.test("switchElements switches selected elements #2", function (assert) {
+        var el = getUl();
+        var counter = 0;
+        var events = [];
+        el.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el.jqListbox('select', 2);
+        el.jqListbox('switchElements', 0, 2);
+        assert.equal(el.jqListbox('getItemByIndex', 0), 'test3');
+        assert.equal(el.jqListbox('isSelected', 2), false);
+        assert.equal(el.jqListbox('isSelected', 0), true);
+    });
+    QUnit.test("Duallistbox: can transfer selected element to another listbox with move", function (assert) {
+        var el1 = getUl();
+        var el2 = getUl();
+        el1.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el1.jqListbox('select', 0);
+        el1.jqListbox('select', 1);
+        el2.jqListbox({
+            initialValues: [
+            ]
+        });
+        el1.jqListbox('transferSelectedTo', el2);
+        assert.deepEqual(el1.jqListbox('getAsArray'), ['test3']);
+        assert.deepEqual(el2.jqListbox('getAsArray'), ['test', 'test2']);
+    });
+    QUnit.test("Duallistbox: can transfer selected element to another listbox with copy", function (assert) {
+        var el1 = getUl();
+        var el2 = getUl();
+        el1.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el1.jqListbox('select', 0);
+        el1.jqListbox('select', 1);
+        el2.jqListbox({
+            initialValues: [
+            ]
+        });
+        el1.jqListbox('transferSelectedTo', el2, true);
+        assert.deepEqual(el1.jqListbox('getAsArray'), ['test', 'test2', 'test3']);
+        assert.deepEqual(el2.jqListbox('getAsArray'), ['test', 'test2']);
+    });
+    QUnit.test("Duallistbox: can transfer by index to another listbox with move", function (assert) {
+        var el1 = getUl();
+        var el2 = getUl();
+        el1.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el2.jqListbox({
+            initialValues: [
+            ]
+        });
+        el1.jqListbox('transferByIndexTo', el2, 0);
+        el1.jqListbox('transferByIndexTo', el2, 0);
+        assert.deepEqual(el1.jqListbox('getAsArray'), ['test3']);
+        assert.deepEqual(el2.jqListbox('getAsArray'), ['test', 'test2']);
+    });
+    QUnit.test("Duallistbox: can transfer by index to another listbox with copy", function (assert) {
+        var el1 = getUl();
+        var el2 = getUl();
+        el1.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el2.jqListbox({
+            initialValues: [
+            ]
+        });
+        el1.jqListbox('transferByIndexTo', el2, 0, true);
+        el1.jqListbox('transferByIndexTo', el2, 1, true);
+        assert.deepEqual(el1.jqListbox('getAsArray'), ['test', 'test2', 'test3']);
+        assert.deepEqual(el2.jqListbox('getAsArray'), ['test', 'test2']);
+    });
+    QUnit.test("Duallistbox: can transfer by multiple index to another listbox with move", function (assert) {
+        var el1 = getUl();
+        var el2 = getUl();
+        el1.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el2.jqListbox({
+            initialValues: [
+            ]
+        });
+        el1.jqListbox('transferByIndexMultiTo', el2, [0, 2]);
+        assert.deepEqual(el1.jqListbox('getAsArray'), ['test2']);
+        assert.deepEqual(el2.jqListbox('getAsArray'), ['test', 'test3']);
+    });
+    QUnit.test("Duallistbox: can transfer by multiple index to another listbox with copy", function (assert) {
+        var el1 = getUl();
+        var el2 = getUl();
+        el1.jqListbox({
+            initialValues: [
+                'test',
+                'test2',
+                'test3'
+            ]
+        });
+        el2.jqListbox({
+            initialValues: [
+            ]
+        });
+        el1.jqListbox('transferByIndexMultiTo', el2, [0, 1], true);
+        assert.deepEqual(el1.jqListbox('getAsArray'), ['test', 'test2', 'test3']);
+        assert.deepEqual(el2.jqListbox('getAsArray'), ['test', 'test2']);
+    });
+    // ---------------------
+    // ---------------------
+    // ---------------------
+    // Test options, events!
+    // ---------------------
+    // ---------------------
+    // ---------------------
+    // ---------------------
+
+</script>
+
+<form>
+    <input type="hidden" name="listbox-value" id="listbox-value">
+    <input type="hidden" name="listbox-value-2" id="listbox-value-2">
+</form>
+
+</body>
+</html>
