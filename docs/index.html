@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>jqListbox - A jQuery plugin to create a listbox that works.</title>
+    <link rel="icon" type="image/gif" href="favicon.gif"/>
+    <meta name="keywords" content="listbox,listview,list,items,jquery,plugin,jqListbox">
+    <meta name="description" content="jQuery plugin. A jQuery plugin to create a listbox that works.">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jqListbox.plugin-1.1.js"></script>
+    <style>
+
+        body {
+            padding-top: 70px;
+            padding-bottom: 100px;
+            background-color: #f1f1f1;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+        }
+
+        .example {
+            padding-top: 100px;
+        }
+
+        .jumbotron {
+            background-color: transparent;
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 1px solid #d1d1d1;
+            box-shadow: 0 1px 0 #fff;
+            border-radius: 0;
+        }
+
+        p > small {
+            color: #aaa;
+        }
+
+        small.smaller {
+            font-size: 14px;
+            text-transform: none;
+            padding-top: 15px;
+            display: block;
+        }
+
+        .customlist {
+            background-color: #fff;
+            border: 1px solid #999;
+            height: 200px;
+            overflow: auto;
+            box-shadow: 0px 5px 5px #dfdfdf;
+        }
+
+        .customlist .tile {
+            padding: 5px;
+            margin: 5px 0;
+            opacity: 0.75;
+            border: 2px solid transparent;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .customlist .tile.selected {
+            opacity: 1;
+            border: 2px solid #E74C3C;
+        }
+
+        .customlist table {
+            width: 100%;
+        }
+
+        .customlist table td {
+            padding: 5px;
+        }
+
+        .customlist table tr {
+            cursor: pointer;
+        }
+
+        .customlist table tr:hover {
+            background-color: #eee;
+        }
+
+        .customlist table tr.selected .glyphicon-check {
+            color: #E74C3C;
+        }
+
+        .customlist ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+
+        .customlist ul li {
+            padding: 5px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .customlist ul li .glyphicon {
+            /*padding-right: 10px;*/
+            float: right;
+            color: #000;
+        }
+
+        .customlist ul li.selected .glyphicon {
+            color: #fff;
+        }
+
+        .customlist ul li .glyphicon-ok {
+            color: #fff;
+            float: none;
+            padding-right: 10px;
+        }
+
+        .customlist ul li small {
+            display: block;
+        }
+
+        .customlist ul li:hover {
+            background-color: #eee;
+        }
+
+        .customlist ul li.selected {
+            background-color: #E74C3C;
+            font-weight: bold;
+            color: #fff;
+        }
+
+    </style>
+
+    <script>
+        Date.prototype.timeNow = function () {
+            return ((this.getHours() < 10) ? "0" : "") + this.getHours() + ":" + ((this.getMinutes() < 10) ? "0" : "") + this.getMinutes() + ":" + ((this.getSeconds() < 10) ? "0" : "") + this.getSeconds();
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1>jqListbox</h1>
+
+        <p>
+            A jQuery plugin to create a listbox that works as you want.
+        </p>
+
+        <p>
+            With this jQuery plugin you can create a listbox which can contain an array of almost any kind of item:
+            string,
+            Number, Object, etc.
+            You can define your own render and encoder functions. Insert, multi insert, move up and down is
+            supported out of the box -
+            and much more!
+        </p>
+        <p>
+            <small class="smaller">Check out some examples below!</small>
+        </p>
+    </div>
+
+    <h2>Features</h2>
+
+    <div class="page-header container">
+        <div class="row">
+            <div class="col-md-6">
+                <ul>
+                    <li>internally stores an array of your items</li>
+                    <li>wire up your own render function for the items</li>
+                    <li>wire up your own encoder function (for example use <code>JSON.stringify</code> to post in a
+                        hidden input)
+                    </li>
+                    <li>custom before... and after... callbacks are supported for inserting, updating, deleting,
+                        clearing, etc.
+                    </li>
+                    <li>
+                        implement your own insert, update and remove logic: show dialogs, ask for confirmation,
+                        etc.
+                    </li>
+                    <li>
+                        <code>transfer</code> methods to copy or move elements between two jqListbox'es (from v1.1)
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul>
+                    <li>CRUD methods are included by default</li>
+                    <li>multi insert, multi update methods</li>
+                    <li>move up and down logic is included by default</li>
+                    <li>allow or block operations via custom callbacks</li>
+                    <li>separate your store and display logic</li>
+                    <li>unit tested (70+ unit tests, 190+ assertions, 97%+ coverage) and linted</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <p class="text-center" style="padding: 30px 0;">
+        <img src="jqlistbox-description.png" alt="How jqListbox works?" class="img-rounded">
+    </p>
+
+    <h2 class="example">Example: Core functionality</h2>
+
+    <p>
+        This is a very simple example using a div with some CSS to display our scrollable list.
+        The list contains Objects but only the <code>title</code> field is displayed.
+        This example uses the build in <code>JSON.stringify()</code> encoder to transform the list to a JSON
+        string in the textarea field.
+    </p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 customlist">
+                <ul id="example1">
+
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-success" id="example1-insert">Insert</a>
+                <a class="btn btn-primary" id="example1-update">Update</a>
+                <a class="btn btn-danger" id="example1-remove">Remove</a>
+                <a class="btn btn-info" id="example1-moveup">Moveup</a>
+                <a class="btn btn-info" id="example1-movedown">Movedown</a>
+                <a class="btn btn-warning" id="example1-clear">Clear</a>
+                <br><br>
+
+                <form>
+                        <textarea style="font-family: Courier; " rows="5" name="target1" id="target1"
+                                  class="form-control" disabled></textarea>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        <p>
+            There are several ways to do things in <strong>jqListbox</strong>.
+            For example updating multiple (selected) items: you can update all of the selected items with the same data
+            or you can update each selected items with different data.
+        </p>
+    </div>
+
+    <script>
+        $('#example1').jqListbox({
+            targetInput: '#target1',
+            initialValues: [
+                {'title': 'Title field 1', 'price': 1000},
+                {'title': 'Title field 2', 'price': 2000},
+                {'title': 'Title field 3', 'price': 3000},
+                {'title': 'Title field 4', 'price': 4000},
+                {'title': 'Title field 5', 'price': 1000},
+                {'title': 'Title field 6', 'price': 2000},
+                {'title': 'Title field 7', 'price': 3000},
+                {'title': 'Title field 8', 'price': 4000}
+            ],
+            itemRenderer: function (item) {
+                return '<li>' + item.title + '</li>';
+            },
+            onBeforeRender: function (listbox) {
+                if (listbox.countSelected() == 0) {
+                    $('#example1-update,#example1-remove,#example1-moveup,#example1-movedown').addClass('disabled');
+                } else {
+                    $('#example1-update,#example1-remove,#example1-moveup,#example1-movedown').removeClass('disabled');
+                }
+            }
+        });
+        $('#example1-insert').click(function (e) {
+            var $myModal = $('#myModal');
+            $myModal.modal();
+            $('#modal-ok').off('click').on('click', function (e) {
+                $myModal.modal('hide');
+                var $testInput = $('#test-input');
+                var $testPrice = $('#test-price');
+                if ($testInput.val().length > 0) {
+                    var $example1 = $('#example1');
+                    $example1.jqListbox('insert', {
+                        'title': $testInput.val(),
+                        'price': $testPrice.val()
+                    });
+                    $example1.parent('div').scrollTop($example1.height());
+                }
+                $testInput.val('');
+                $testPrice.val('');
+                e.preventDefault();
+                return false;
+            });
+        });
+        $('#example1-update').click(function (e) {
+            var item = $('#example1').jqListbox('getSelectedItems');
+            var $testInput = $('#test-input');
+            $testInput.val(item[0].title);
+            var $testPrice = $('#test-price');
+            $testPrice.val(item[0].price);
+            var $myModal = $('#myModal');
+            $myModal.modal();
+            $('#modal-ok').off('click').on('click', function (e) {
+                $myModal.modal('hide');
+                if ($testInput.val().length > 0) {
+                    $('#example1').jqListbox('update', {
+                        'title': $testInput.val(),
+                        'price': $('#test-price').val()
+                    });
+                }
+                $testInput.val('');
+                $testPrice.val('');
+                e.preventDefault();
+                return false;
+            });
+        });
+        $('#example1-remove').click(function (e) {
+            if (confirm("Are you sure?")) {
+                $('#example1').jqListbox('remove');
+            }
+        });
+        $('#example1-clear').click(function (e) {
+            if (confirm("Are you sure?")) {
+                $('#example1').jqListbox('clear');
+            }
+        });
+        $('#example1-moveup').click(function (e) {
+            $('#example1').jqListbox('moveup');
+        });
+        $('#example1-movedown').click(function (e) {
+            $('#example1').jqListbox('movedown');
+        });
+    </script>
+
+
+    <h2 class="example">Example: Custom item renderer</h2>
+
+    <p>
+        This example is using the <code>itemRenderer</code> option in a creative way. As you can see you can
+        really render your items as you want!
+        <br>
+        Also this one is using a custom select render method - not the built in (automatic)
+        <code>selectedClass</code>!
+    </p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 customlist">
+                <table id="example2">
+
+                </table>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-success" id="example2-insert">Insert</a>
+                <a class="btn btn-primary" id="example2-update">Update</a>
+                <a class="btn btn-danger" id="example2-remove">Remove</a>
+                <a class="btn btn-info" id="example2-moveup">Moveup</a>
+                <a class="btn btn-info" id="example2-movedown">Movedown</a>
+                <a class="btn btn-warning" id="example2-clear">Clear</a>
+                <br><br>
+
+                <form>
+                        <textarea style="font-family: Courier; " rows="5" name="target2" id="target2"
+                                  class="form-control" disabled></textarea>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <br>
+
+                <p>
+                    <span class="label label-success"><strong id="example2-count">0</strong> items</span>
+                        <span class="label label-primary"><strong
+                                id="example2-selected">0</strong> items selected</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        <p>
+            The first example is using Bootstrap's Modal for asking for user input, but the second one just throws
+            simple JS
+            prompt boxes. With <strong>jqListbox</strong> it's up to you how to do things, how to interact with the
+            user.
+        </p>
+    </div>
+
+    <script>
+        $('#example2').jqListbox({
+            targetInput: '#target2',
+            itemSelector: 'tr',
+            selectedClass: false,
+            initialValues: [
+                {'title': 'John Doe', 'subtitle': 'Senior Developer', 'icon': 'glyphicon glyphicon-user'},
+                {'title': 'Jane Doe', 'subtitle': 'Senior Designer', 'icon': 'glyphicon glyphicon-user'},
+                {'title': 'James Dohn', 'subtitle': 'Project Manager', 'icon': 'glyphicon glyphicon-user'},
+                {'title': 'Carl Anderson', 'subtitle': 'Contractor', 'icon': 'glyphicon glyphicon-euro'},
+            ],
+            itemRenderer: function (item, pos, listbox) {
+                var row = $('<tr><td><span class="glyphicon glyphicon-unchecked"></span></td><td class="' + item.icon + '"></td><td>' + item.title + '</td><td>' + item.subtitle + '</td></tr>');
+                if (listbox.isSelected(pos)) {
+                    row.find('td:first').html('<span class="glyphicon glyphicon-check"></span>');
+                    row.addClass('selected');
+                }
+                return row;
+            },
+            onBeforeRender: function (listbox) {
+                if (listbox.countSelected() == 0) {
+                    $('#example2-update,#example2-remove,#example2-moveup,#example2-movedown').addClass('disabled');
+                } else {
+                    $('#example2-update,#example2-remove,#example2-moveup,#example2-movedown').removeClass('disabled');
+                }
+            },
+            onAfterRender: function (listbox) {
+                var count = listbox.count();
+                var selCount = listbox.countSelected();
+
+                $('#example2-count').text(count);
+                $('#example2-selected').text(selCount);
+
+                if (count > 0 && count === selCount) {
+                    $('#example2-selected').text('All');
+                }
+            }
+        });
+        $('#example2-insert').click(function (e) {
+            if (s = prompt('Name?')) {
+                var $example2 = $('#example2');
+                $example2.jqListbox('insert', {
+                    'title': s,
+                    'subtitle': 'Someone',
+                    'icon': 'glyphicon glyphicon-heart'
+                });
+                $example2.parent('div').scrollTop($example2.height());
+            }
+        });
+        $('#example2-update').click(function (e) {
+            // This method always return an array
+            // Will return ALL of the selected items in case of multiselection
+            // and will return an array with 1 length in case of single-selection
+            var $example2 = $('#example2');
+            var items = $example2.jqListbox('getSelectedItems');
+            if (s = prompt('Name?', items[0].title)) {
+                var d = new Date();
+                var t = d.timeNow();
+                items[0].title = s;
+                $example2.jqListbox('update', items[0]);
+            }
+        });
+        $('#example2-remove').click(function (e) {
+            if (confirm("Are you sure?")) {
+                $('#example2').jqListbox('remove');
+            }
+        });
+        $('#example2-clear').click(function (e) {
+            if (confirm("Are you sure?")) {
+                $('#example2').jqListbox('clear');
+            }
+        });
+        $('#example2-moveup').click(function (e) {
+            $('#example2').jqListbox('moveup');
+        });
+        $('#example2-movedown').click(function (e) {
+            $('#example2').jqListbox('movedown');
+        });
+    </script>
+
+    <h2 class="example">Example: Dual listbox</h2>
+
+    <p>
+        This example is using the <code>transferSelectedTo</code> method to move the selected elements between the
+        listboxes. For this setup both listboxes should contain the same type of elements. There are two other methods
+        available: <code>transferByIndexTo</code> and <code>transferByIndexMultiTo</code> methods.
+    </p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="col-md-12 customlist">
+                    <ul id="example4">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2" style="text-align: center;">
+                <a class="btn btn-success" id="example4-copy">Copy -></a>
+                <br>
+                <br>
+                <a class="btn btn-warning" id="example4-move">Move -></a>
+                <br>
+                <br>
+                <a class="btn btn-success" id="example5-copy"><- Copy</a>
+                <br>
+                <br>
+                <a class="btn btn-warning" id="example5-move"><- Move</a>
+            </div>
+            <div class="col-md-5">
+                <div class="col-md-12 customlist">
+                    <ul id="example5">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#example4').jqListbox({
+            targetInput: false,
+            initialValues: [
+                'First element, listbox 1',
+                'Second element, listbox 1',
+                'Third element, listbox 1',
+                'Fourth element, listbox 1'
+            ],
+            onBeforeRender: function (listbox) {
+                if (listbox.countSelected() == 0) {
+                    $('#example4-copy,#example4-move').addClass('disabled');
+                } else {
+                    $('#example4-copy,#example4-move').removeClass('disabled');
+                }
+            }
+        });
+        $('#example5').jqListbox({
+            targetInput: false,
+            initialValues: [
+                'First element, listbox 2',
+                'Second element, listbox 2',
+                'Third element, listbox 2',
+                'Fourth element, listbox 2'
+            ],
+            onBeforeRender: function (listbox) {
+                if (listbox.countSelected() == 0) {
+                    $('#example5-copy,#example5-move').addClass('disabled');
+                } else {
+                    $('#example5-copy,#example5-move').removeClass('disabled');
+                }
+            }
+        });
+        $('#example4-copy').click(function(e){
+            $('#example4').jqListbox('transferSelectedTo', $('#example5'), true);
+            e.preventDefault();
+            return false;
+        });
+        $('#example4-move').click(function(e){
+            $('#example4').jqListbox('transferSelectedTo', $('#example5'));
+            e.preventDefault();
+            return false;
+        });
+        $('#example5-copy').click(function(e){
+            $('#example5').jqListbox('transferSelectedTo', $('#example4'), true);
+            e.preventDefault();
+            return false;
+        });
+        $('#example5-move').click(function(e){
+            $('#example5').jqListbox('transferSelectedTo', $('#example4'));
+            e.preventDefault();
+            return false;
+        });
+    </script>
+
+    <h2 class="example">Example: Custom item encoder</h2>
+
+    <p>
+        This example is using the <code>listboxValueEncoder</code> option to transform the items to the
+        needed target value. This target value can be posted in a hidden input for example.
+    </p>
+
+    <p>
+        Also we are using <code>multiUpdate</code> here. With <code>multiUpdate</code> you can update all of
+        the selected elements with different data.
+    </p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 customlist">
+                <div class="row">
+                    <div class="col-md-12" id="example3">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-success" id="example3-insert">Insert</a>
+                <a class="btn btn-primary" id="example3-update">Update</a>
+                <a class="btn btn-danger" id="example3-remove">Remove</a>
+                <a class="btn btn-info" id="example3-moveup">Moveup</a>
+                <a class="btn btn-info" id="example3-movedown">Movedown</a>
+                <a class="btn btn-warning" id="example3-clear">Clear</a>
+                <br><br>
+
+                <form>
+                        <textarea style="font-family: Courier; " rows="5" name="target2" id="target3"
+                                  class="form-control" disabled></textarea>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <br>
+
+                <p>
+                    <span class="label label-success"><strong id="example3-count">0</strong> items</span>
+                        <span class="label label-primary"><strong
+                                id="example3-selected">0</strong> items selected</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+        <p>
+            We are using the <code>onBeforeItemInsert</code> callback to limit the number of elements to
+            <strong>10</strong>.
+        </p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal test for jqListbox</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="test-input" class="control-label">Name:</label>
+                            <input type="text" class="form-control" id="test-input" name="test-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="test-price" class="control-label">Price:</label>
+                            <input type="text" class="form-control" id="test-price" name="test-price">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="modal-ok">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+		function randomIntFromInterval(min,max) {
+			return Math.floor(Math.random()*(max-min+1)+min);
+		}	
+		
+        $('#example3').jqListbox({
+            targetInput: '#target3',
+            itemSelector: 'div.tile',
+            selectedClass: false,
+            initialValues: [
+                {'id': 'PIC1', 'url': 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100)},
+                {'id': 'PIC2', 'url': 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100)},
+                {'id': 'PIC3', 'url': 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100)},
+                {'id': 'PIC4', 'url': 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100)},
+            ],
+            itemRenderer: function (item, pos, listbox) {
+                var div = $('<div class="tile col-md-3" />');
+                div.append('<img src="' + item.url + '" />');
+                if (listbox.isSelected(pos)) {
+                    div.addClass('selected');
+                }
+                return div;
+            },
+            listboxValueEncoder: function (items) {
+                var value = [];
+                for (var i in items) {
+                    value.push(items[i].id);
+                }
+                return value.join(';');
+            },
+            onBeforeRender: function (listbox) {
+                if (listbox.countSelected() == 0) {
+                    $('#example3-update,#example3-remove,#example3-moveup,#example3-movedown').addClass('disabled');
+                } else {
+                    $('#example3-update,#example3-remove,#example3-moveup,#example3-movedown').removeClass('disabled');
+                }
+            },
+            onBeforeItemInsert: function (items, listbox) {
+                if (listbox.count() === 10) {
+                    alert('Limit reached. Please remove some items before insert new ones!');
+                    return false;
+                }
+            },
+            onAfterRender: function (listbox) {
+                var count = listbox.count();
+                var selCount = listbox.countSelected();
+
+                $('#example3-count').text(count);
+                $('#example3-selected').text(selCount);
+
+                if (count > 0 && count === selCount) {
+                    $('#example3-selected').text('All');
+                }
+            }
+        });
+        $('#example3-insert').click(function (e) {
+            var $example3 = $('#example3');
+            $example3.jqListbox('insert',
+                    {
+                        'id': 'PIC' + ($example3.jqListbox('count') + 1),
+                        'url': 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100)
+                    }
+            );
+            $example3.parents('.customlist').scrollTop($example3.height());
+        });
+        $('#example3-update').click(function (e) {
+            // This method always return an array
+            // Will return ALL of the selected items in case of multiselection
+            // and will return an array with 1 length in case of single-selection
+            var $example3 = $('#example3');
+            var items = $example3.jqListbox('getSelectedItems');
+            if (items.length === 1) {
+                items[0].url = 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100);
+                $example3.jqListbox('update', items[0]);
+            } else {
+                for (var i in items) {
+                    items[i].url = 'https://unsplash.it/124/124/' + '?image=' + randomIntFromInterval(1,100);
+                }
+                $example3.jqListbox('updateMulti', items);
+            }
+        });
+        $('#example3-remove').click(function (e) {
+            if (confirm("Are you sure?")) {
+                $('#example3').jqListbox('remove');
+            }
+        });
+        $('#example3-clear').click(function (e) {
+            if (confirm("Are you sure?")) {
+                $('#example3').jqListbox('clear');
+            }
+        });
+        $('#example3-moveup').click(function (e) {
+            $('#example3').jqListbox('moveup');
+        });
+        $('#example3-movedown').click(function (e) {
+            $('#example3').jqListbox('movedown');
+        });
+    </script>
+
+    <!--<script>-->
+    <!--(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){-->
+    <!--(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),-->
+    <!--m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)-->
+    <!--})(window,document,'script','//www.google-analytics.com/analytics.js','ga');-->
+
+    <!--ga('create', 'UA-62657220-1', 'auto');-->
+    <!--ga('send', 'pageview');-->
+    <!--</script>-->
+</div>
+</body>
+</html>
