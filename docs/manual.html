@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>jqListbox Documentation</title>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jqListbox.plugin-1.1.js"></script>
+
+    <style>
+        .info {
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        h2 {
+            margin-top: 80px;
+        }
+
+        a {
+            outline: 0 !important;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 15px 5px;
+        }
+
+        table td.disallowed {
+            background-color: #eee;
+        }
+
+        table td.active {
+            background-color: #222;
+            color: #fff;
+        }
+
+        .html li a {
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .html li a.disallowed {
+            color: #ccc;
+        }
+
+        .html li a.active {
+            color: #000;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>jqListbox Manual</h1>
+		<p>		
+			<a href="https://github.com/ferencb/jqlistbox">GitHub repository</a>
+			<br>
+			<a href="jsdoc/jqListbox.html">JSDOC</a>
+			<br>
+			<a href="unittest.html">Unit test</a>
+		</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            <h2>API Documentation</h2>
+
+            <p>You can find an API-style documentation <a href="jsdoc/jqListbox.html" target="_blank">here</a>.</p>
+
+            <h2>Quick install</h2>
+            <ol>
+                <li>Copy the <code>js/jqListbox.plugin-1.1.js</code> file to your web root (or in a subfolder)</li>
+                <li>Include the file after jQuery in your HTML file(s)</li>
+            </ol>
+
+            <h2>Quick checklist</h2>
+            <ol>
+                <li>jQuery is included on your page</li>
+                <li>jqListbox is included on your page</li>
+                <li>
+                    You are created a wrapper element (for example a <code>div</code>) which will contain your list
+                    container element.
+                    <ul>
+                        <li>
+                            However you are not required to create a wrapper element it is better because of styling
+                            your listbox via CSS: if you wrap your for example <code>ul</code> list under a
+                            <code>div</code> element
+                            you can style your <code>div</code> as fixed height and <code>overflow: auto</code> to
+                            imitate a listbox with scroll.
+                            <br>
+                            Of course it is up to you how to use jqListbox - maybe you don't need a wrapper element at
+                            all.
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    You are created a container element (for example a <code>ul</code>) which will contain your list
+                    items.
+                    <ul>
+                        <li>
+                            You must call <code>.jqListbox()</code> on the element containing your list items. When a
+                            new item will be appended
+                            it will be appended into your container element. Don't confuse the optional wrapper element
+                            created for styling and the container element containing your list items!
+                        </li>
+                        <li>
+                            If you are working with a <code>ul</code> list you must call <code>.jqListbox</code> on the
+                            <code>ul</code> element: <code>$('ul#myul').jqListbox();</code>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Your selectable items can be selected by a jQuery selector string (like <code>li</code>).
+                    Items will be matched with the defined <code>itemSelector</code> relative to your container element
+                    like
+                    <code>$('ul#myul').find(itemSelector);</code>
+                </li>
+                <li>Called <code>.jqListbox()</code> on your container element after jQuery and jqListbox loaded
+                    and the DOM is ready
+                </li>
+                <li>You have set up your listbox - options, callbacks, events</li>
+                <li>You have set up insert, update, remove, etc events on some triggers (for example button clicks)</li>
+                <li>You have some styles for your list</li>
+            </ol>
+
+            <h2>Terms</h2>
+
+            <p>
+                <strong>Container</strong>: the main container for all of your items. If you are using a list
+                then the container can be the <code>&lt;ul&gt;</code> element.
+                <br>
+                You must call <code>.jqListbox()</code> on your container element.
+            </p>
+
+            <p>
+                <strong>Wrapper</strong>: an optional element containing your container element mainly because
+                of styling via CSS.
+            </p>
+
+            <p>
+                <strong>Item</strong>: one of your item in your listbox.
+            </p>
+
+            <p>
+                <strong>listboxValueEncoder</strong>: a function which will be called any time your listbox has
+                changed (insert, update, etc). The array of the stored items will be passed to this function. Your
+                function must return a value which can be used for example to post back to your backend application
+                and save it. It is recommended to use <code>JSON.stringify()</code>
+            </p>
+
+            <p>
+                <strong>listboxValueDecoder</strong>: a function which will be called when you need to decode your
+                elements. This function is used when the initial values is set from a value generated by the
+                <code>listboxValueEncoder</code>.
+            </p>
+
+            <p>
+                <strong>itemRenderer</strong>: a function which will be called when your items are rendered. This
+                function is called once for every item so you must return a string or jQuery object which must be
+                appended to your list container element.
+            </p>
+
+            <p>
+                <strong>JSON</strong>: JavaScript Object Notation. Text representation of JavaScript objects. Read more
+                <a href="https://en.wikipedia.org/wiki/JSON" target="_blank">here</a> and <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"
+                    target="_blank">here</a>.
+            </p>
+
+            <p class="text-center" style="padding: 30px 0;">
+                <img src="jqlistbox-description.png" alt="How jqListbox works?" class="img-rounded">
+            </p>
+
+            <h2>Initial setup</h2>
+
+            <h3>jQuery, JavaScript</h3>
+
+            <p>
+                This plugin needs <a href="http://jquery.com" target="_blank">jQuery</a> 1.x (tested with 1.11.3) or 2.x
+                (tested with 2.1.4).
+                You can download jQuery from <a href="http://jquery.com/download/" target="_blank">here</a> or you can
+                use the
+                <a href="http://jquery.com/download/#using-jquery-with-a-cdn" target="_blank">jQuery CDN</a>.
+                You must <a href="http://www.w3schools.com/js/js_whereto.asp" target="_blank">include jQuery</a> on
+                every page where jqListbox is used.
+            </p>
+
+            <p>
+                Once jQuery is included you must include jqListbox after jQuery is loaded.
+                For production sites you should use the minified version of the plugin (filename ends with
+                <code>.min.js</code>).
+            </p>
+            
+<pre>
+&lt;!-- If the plugin found in your /js folder --&gt;    
+&lt;script type="text/javascript" src="js/jqListbox.plugin-1.1.min.js"&gt;&lt;/script&gt;
+</pre>
+
+            <h3>CSS</h3>
+
+            <p>No specific style sheet is needed for the jqListbox plugin. Also no style sheets are included in the
+                package.</p>
+
+            <p>You can use this plugin with your own CSS styles.</p>
+
+            <h3>HTML</h3>
+
+            <p>You can use any structure you like! Just ensure that your items are wrapped under a container.</p>
+
+            <p>You will need a container which holds your items. You can initialize the
+                plugin on this container. Also typically you will need to declare when and how to insert, update, remove
+                and
+                render items.
+            </p>
+
+            <p class="bg-primary info">
+                Item selector must be defined relative to your container element because it will be matched
+                with <code>$(container).find(itemSelector);</code> when needed!
+            </p>
+
+            <p class="bg-info info">
+                The default itemSelector is <code>li</code>.
+                You can override this option via the option <code>itemSelector</code>.
+            </p>
+
+            <p>In the following example your container element will be <code>ul#customlist</code> while your
+                items will be the <code>li</code> tags.</p> Because the default options are used no need to
+            override any setting.
+
+<pre>
+&lt;!-- HTML structure --&gt;
+    &lt;ul id="customlist"&gt;
+    &lt;/ul&gt;
+...
+&lt;!-- somewhere in your JS code --&gt;
+&lt;script&gt;
+    $('#customlist').jqListbox();
+&lt;/script&gt;    
+</pre>
+
+            <h2>Initialize the plugin</h2>
+
+            <p>
+                Simply call the plugin <code>jqListbox()</code> on your container element. You can define custom
+                options as a passed parameter object.</p>
+
+<pre>
+&lt;script&gt;
+    $('#customlist').jqListbox({
+        selectedClass: 'selected-item',
+        mutliselect: false
+    });
+&lt;/script&gt;
+</pre>
+
+            <br><br>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Notes about the example
+                </div>
+                <div class="panel-body">
+                    Through this documentation we will setup a basic list with <code>ul</code>
+                    and <code>li</code> tags wrapped under a container <code>div</code>. Watch out for comments and
+                    descriptions and check the options section and the included
+                    <a href="jsdoc/jqListbox.html" target="_blank">jsdoc</a> for a full reference!
+                </div>
+            </div>
+            <br>
+
+            <h4>Our basic starter structure for the example</h4>
+
+<pre>
+&lt;!-- HTML structure --&gt;
+    &lt;ul id="customlist"&gt;
+    &lt;/ul&gt;
+...
+&lt;!-- somewhere in your JS code --&gt;
+&lt;script&gt;
+    $('#customlist').jqListbox();
+&lt;/script&gt;
+</pre>
+
+            <h3>Setup item renderer</h3>
+
+            <p>
+                The <code>itemRenderer</code> function defines how an item is rendered. The default is to render <code>li</code>
+                items
+                from a basic <code>Array of string</code> structure (<code>var items = ['Item','Item',...];</code>).
+            </p>
+
+            <p>
+                The <code>itemRenderer</code> function will be called every time a rendering is needed. The actual
+                rendered item, its position and the instance of the current jqListbox will be passed as parameters.
+            </p>
+
+            <p>
+                In this example we are assuming that your items are Objects which contains a <code>field</code> and a
+                <code>price</code>
+                property which needs to be rendered.
+            </p>
+
+<pre>
+&lt;script&gt;
+    $('#customlist').jqListbox({
+       // Render items
+       itemRenderer: function(item, pos, listbox) {
+          return '&lt;li&gt;' + item.title + ' (' + item.price + ')&lt;/li&gt;';
+       }
+    });
+&lt;/script&gt;
+</pre>
+
+            <h3>Setup listbox value renderer</h3>
+
+            <p>
+                The <code>listboxValueEncoder</code> function produces the result of your listbox (remember the image
+                on the top of the documentation).
+                jqListbox supporting setting this value in an input by default (see option <code>targetInput</code>) but
+                it is up to you what to do with this value. Typically you want to post it back to your backend
+                application to save it.
+            </p>
+
+            <p>
+                The default function used by jqListbox is to convert your array of items to a JSON string. Typically
+                this is what you need: encode your values to JSON string - later you can decode this string on
+                backend side if needed (<code>json_decode</code> in PHP) to save in DB for example.
+            </p>
+
+            <p>
+                If you need something else then <code>JSON.stringify()</code> for encoding the values of your listbox
+                just fire up your own function via the option <code>listboxValueEncoder</code>.
+            </p>
+
+            <h4>Output value</h4>
+
+            <p>
+                By default jqListbox will try to set this value in an input with id <code>#listbox-value</code>.
+                You can override this selector with the option <code>targetInput</code>. Set the value of this option
+                to <code>false</code> to completely disable this functionality and do it on your own.
+            </p>
+
+            <p>
+                Now for the example we will modify the <code>targetInput</code> selector to point to our newly created
+                hidden input. We must add a dummy form above our <code>ul</code> list.
+            </p>
+
+<pre>
+&lt;!-- HTML structure --&gt;
+    &lt;form id="target-form" method="post" action="/post.php"&gt;
+        &lt;input type="hidden" name="output" id="output"&gt;
+    &lt;/form&gt; 
+    
+    &lt;ul id="customlist"&gt;
+    &lt;/ul&gt;
+...
+    
+&lt;script&gt;
+    $('#customlist').jqListbox({
+       // Render items
+       itemRenderer: function(item, pos, listbox) {
+          return '&lt;li&gt;' + item.title + ' (' + item.price + ')&lt;/li&gt;';
+       },
+       // Modify the input selector
+       targetInput: '#output'
+    });
+&lt;/script&gt;
+</pre>
+
+            <p class="bg-info info">
+                <strong>If you need custom output logic</strong>
+                <br>
+                The <code>onAfterRender</code> event will be triggered any time when the listbox has changed and
+                re-rendered
+                so it is good to put new output rendering logic there. Don't forget to disable the
+                <code>targetInput</code>
+                option if you need custom logic! Check out the options below.
+            </p>
+
+            <h3>Setup decoder</h3>
+
+            <p>
+                A decoder is needed if you want to initialize/pre-set elements in your listbox from encoded values.
+                Generally the <code>listboxValueDecoder</code> function is the opposite function of the <code>listboxValueEncoder</code>.
+            </p>
+
+            <p>
+                The default value of the <code>listboxValueDecoder</code> is a function which calls the <code>JSON.parse()</code>,
+                the opposite of <code>JSON.stringify()</code> - so it will return the original array of your items.
+            </p>
+
+            <p>
+                If you remember we are already using the default function of <code>listboxValueEncoder</code> so we are
+                good
+                to also leave the default option for <code>listboxValueEncoder</code> for now.
+            </p>
+
+            <h3>Setup actions</h3>
+
+            <p>
+                For inserting, updating, deleting your elements you should add some action buttons. You must define your
+                own logic for this actions and call jqListbox's methods to handle your items.
+            </p>
+
+            <h4>Insert</h4>
+
+            <p>
+                For this example we are creating a button and add a new item on click.
+            </p>
+            
+<pre>
+    &lt;a href="#" id="insert"&gt;Insert new element&lt;/a&gt;
+    &lt;script&gt;
+        $('#insert').click(function(e){
+            // Show your own dialog or something to your user
+            // and clicking on some button insert the new element
+            // For this demo we just inserting a new element
+            // So basically yes, this call to the insert method should go to the submit handler of your form for example
+            $('#customlist').jqListbox('insert', {'title' : 'New element', 'price' : 12345});
+            e.preventDefault();
+            return false;
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h4>Update</h4>
+
+            <p>
+                Updating is similar to inserting: you must call the <code>update</code> method to update
+                the selected item.
+            </p>
+
+            <p>
+                If multiple selection is allowed and more than one element is selected then you can update
+                all of them with the same data or pass an array of updated elements to update each selected
+                element with different data (so you must pass one updated element for every selected element) to the
+                <code>updateMulti</code> method. Yes, there are two update methods: the <code>update</code> and the
+                <code>updateMulti</code>
+                (and the third is the <code>updateAt</code>).
+            </p>
+
+<pre>
+    &lt;a href="#" id="update"&gt;Update element&lt;/a&gt;
+    &lt;script&gt;
+        $('#insert').click(function(e){
+            // Show your own dialog or something to your user
+            // and clicking on some button update the selected element(s)
+            // For this demo we just updating the selected elements
+            $('#customlist').jqListbox('update', {'title' : 'Updated element', 'price' : 99999});
+            e.preventDefault();
+            return false;
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h4>Remove</h4>
+
+            <p>
+                Also deletion is similar to updating. Calling the <code>remove</code> method will remove
+                all of the selected elements.
+            </p>
+
+<pre>
+    &lt;a href="#" id="remove"&gt;Remove selected&lt;/a&gt;
+    &lt;script&gt;
+        $('#remove').click(function(e){
+            if (confirm('Are you sure?')) {
+               $('#customlist').jqListbox('remove');
+            }
+            e.preventDefault();
+            return false;
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h4>Clear</h4>
+
+            <p>
+                Calling the <code>clear</code> method will remove all of the elements.
+            </p>
+
+<pre>
+    &lt;a href="#" id="clear"&gt;Clear&lt;/a&gt;
+    &lt;script&gt;
+        $('#clear').click(function(e){
+            if (confirm('Are you sure?')) {
+               $('#customlist').jqListbox('clear');
+            }
+            e.preventDefault();
+            return false;
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h4>Move up</h4>
+
+            <p>
+                The built-in <code>moveup</code> method supports multiple selection.
+                When calling <code>moveup</code> all of the selected items will be moved up by one position.
+                If the very-first element is moved up it will be moved to the end of the list and all other elements
+                will be pushed up by one position.
+            </p>
+
+<pre>
+    &lt;a href="#" id="moveup"&gt;Move up&lt;/a&gt;
+    &lt;script&gt;
+        $('#moveup').click(function(e){
+            $('#customlist').jqListbox('moveup');
+            e.preventDefault();
+            return false;
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h4>Move down</h4>
+
+            <p>
+                The built-in <code>movedown</code> method supports multiple selection.
+                When calling <code>movedown</code> all of the selected items will be moved down by one position.
+                If the very-last element is moved down it will be moved to the beginning of the list and all other
+                elements
+                will be pushed down by one position.
+            </p>
+
+<pre>
+    &lt;a href="#" id="movedown"&gt;Move up&lt;/a&gt;
+    &lt;script&gt;
+        $('#movedown').click(function(e){
+            $('#customlist').jqListbox('movedown');
+            e.preventDefault();
+            return false;
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h4>Enable only available actions</h4>
+
+            <p>
+                Of course you don't want to enable the update or remove action if no items are selected.
+                You can easily do this by setting up some easy logic.
+            </p>
+
+            <p>
+                The <code>onBeforeRender</code> or the <code>onAfterRender</code> are two good candidates for
+                this kind of logics.
+            </p>
+
+            <p>
+                What you want is: if no element is selected (<code>countSelected()</code> method returns 0) then
+                disable the update,remove,moveup and movedown actions. In this example we just add a disabled class
+                to these buttons.
+            </p>
+            
+<pre>
+    &lt;script&gt;
+        $('#customlist').jqListbox({
+            ...
+            onBeforeRender: function (listbox) {
+                if (listbox.countSelected() == 0) {
+                    $('#update,#remove,#moveup,#movedown').addClass('disabled');
+                } else {
+                    $('#update,#remove,#moveup,#movedown').removeClass('disabled');
+                }
+            }
+            ...
+        });
+    &lt;/script&gt;
+</pre>
+
+            <h3>Optional events</h3>
+
+            <p>
+                There are a lot of callbacks triggered by different events: for example you can fire up some custom
+                logic before a new element is inserted or elements are updated. Also you can change the newly inserted
+                element before the insertion, etc. There are a lot of possibilities in these callbacks!
+                <br>
+                Check out the options below or the JSDoc!
+            </p>
+
+            <h2>Methods</h2>
+
+            <p>
+                You can use the following methods in jqListbox. Also check out the options below and the included
+                detailed
+                <a href="jsdoc/jqListbox.html" target="_blank">JSDoc</a>!
+            </p>
+
+            <p>
+                Every method can be accessed via the jqListbox instance but there are some methods which are
+                intended for internal use only - for example you won't need to call setupAutoClickHandler by hand.
+                <br>
+                I'm listing only the methods intended for use in your code - however you can check all of the methods
+                and the full API-like reference in the JSDoc.
+            </p>
+
+
+            <p class="info bg-info">
+                Call these methods on the jqListbox instance on your element like <code>$('#customlist').jqListbox('remove');</code>.
+                Simply pass parameters like <code>$('#customlist').jqListbox('removeByIndex', 4);</code>. In the
+                callbacks where the
+                current instance is passed you can simply use the methods of the passed instance (like <code>listbox.removeByIndex(4);</code>
+            </p>
+
+            <table class="table table-striped">
+                <tr>
+                    <th>Method</th>
+                    <th>Description</th>
+                    <th>Parameters</th>
+                    <th>Returns</th>
+                </tr>
+                <tr>
+                    <td>count</td>
+                    <td>
+                        Returns the number of elements in the listbox.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>int</code> - the length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>countSelected</td>
+                    <td>
+                        Returns the number of selected elements in the listbox.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>int</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>reset</td>
+                    <td>Resets the listbox: clear, initialize items based on the options and renders the initial
+                        state.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>render</td>
+                    <td>
+                        Renders the listbox (items) and the output value.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>insert</td>
+                    <td>
+                        Inserts a new item at the end of the listbox.
+                    </td>
+                    <td>
+                        <code>item</code> - the new item
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>insertAt</td>
+                    <td>
+                        Inserts a new item at the given position. Negative value means counting for the end
+                        (0 means first position, -1 means last position).
+                    </td>
+                    <td>
+                        <code>item</code> - the new item
+                        <br>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>insertMulti</td>
+                    <td>
+                        Inserts multiple items at the end of the listbox
+                    </td>
+                    <td>
+                        <code>items</code> - array of new items
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>insertMultiAt</td>
+                    <td>
+                        Inserts multiple items at the given position. Negative value means counting for the end
+                        (0 means first position, -1 means last position).
+                    </td>
+                    <td>
+                        <code>items</code> - array of new items
+                        <br>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>update</td>
+                    <td>
+                        Updates the selected element(s). If multiple elements are selected then all of the elements
+                        will be updated with the passed data.
+                    </td>
+                    <td>
+                        <code>updatedItem</code> - data (Object) of the new item
+                    </td>
+                    <td>
+                        <code>int</code> - the number of the selected items
+                    </td>
+                </tr>
+                <tr>
+                    <td>updateMulti</td>
+                    <td>
+                        Updates the selected element(s). You must pass as many updated items as many items are selected:
+                        each of them will be updated with the next item in the array (0-0, 1-1, etc.)
+                    </td>
+                    <td>
+                        <code>updatedItems</code> - array of new items
+                    </td>
+                    <td>
+                        <code>int</code> - the number of the selected items
+                    </td>
+                </tr>
+                <tr>
+                    <td>updateAt</td>
+                    <td>
+                        Updated the item in the given position. Negative value means counting for the end
+                        (0 means first position, -1 means last position).
+                    </td>
+                    <td>
+                        <code>updatedItem</code> - the new item
+                        <br>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        <code>Object</code> - the updated item data
+                    </td>
+                </tr>
+                <tr>
+                    <td>remove</td>
+                    <td>
+                        Removes all of the selected items
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>removeByIndex</td>
+                    <td>
+                        Removes an item in the given position.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>clear</td>
+                    <td>
+                        Removes all items
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>moveup</td>
+                    <td>
+                        Moves up selected items by one position.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>moveupByIndex</td>
+                    <td>
+                        Moves up the item in position by one.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>movedown</td>
+                    <td>
+                        Moved down selected items by one position.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>movedownByIndex</td>
+                    <td>
+                        Moved down the item in position by one.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>switchElements</td>
+                    <td>
+                        Switches to elements by position.
+                    </td>
+                    <td>
+                        <code>pos1</code> - the position
+                        <br>
+                        <code>pos2</code> - the position
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>shiftElementsUp</td>
+                    <td>
+                        Shift every elements by one position up
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>shiftElementsDown</td>
+                    <td>
+                        Shift every elements by one position down
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>transferSelectedTo</td>
+                    <td>
+                        Transfer the currently selected elements to another jqListbox instance.
+                    </td>
+                    <td>
+                        <code>listbox</code> - the another container of the jqListbox instance. This must be the
+                        jQuery element for example <code>$('#anotherlistbox')</code>.
+                        <br>
+                        <code>copy</code> - optional. Set this parameter to <code>true</code> if you want to
+                        copy the elements instead of move (transfer).
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>transferByIndexTo</td>
+                    <td>
+                        Transfer one element in the given position to another jqListbox instance.
+                    </td>
+                    <td>
+                        <code>listbox</code> - the another container of the jqListbox instance. This must be the
+                        jQuery element for example <code>$('#anotherlistbox')</code>.
+                        <br>
+                        <code>index</code> - the index of the element to copy/move.
+                        <br>
+                        <code>copy</code> - optional. Set this parameter to <code>true</code> if you want to
+                        copy the element instead of move (transfer).
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>transferByIndexMultiTo</td>
+                    <td>
+                        Transfer multiple elements by position to another jqListbox instance.
+                    </td>
+                    <td>
+                        <code>listbox</code> - the another container of the jqListbox instance. This must be the
+                        jQuery element for example <code>$('#anotherlistbox')</code>.
+                        <br>
+                        <code>indices</code> - the array of indices of the elements to copy/move.
+                        <br>
+                        <code>copy</code> - optional. Set this parameter to <code>true</code> if you want to
+                        copy the elements instead of move (transfer).
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>getItemByIndex</td>
+                    <td>Returns the item in position. Range checks must be done by you!</td>
+                    <td>
+                        <code>pos</code> - the position
+                    </td>
+                    <td>
+                        Object
+                    </td>
+                </tr>
+                <tr>
+                    <td>getTargetValue</td>
+                    <td>
+                        Returns the target (encoded) value of the listbox by calling <code>listboxValueEncoder</code>
+                        and
+                        returning its return value.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>string|Object</code> - the return value of the listboxValueEncoder function
+                    </td>
+                </tr>
+                <tr>
+                    <td>setFromTargetValue</td>
+                    <td>
+                        Overwrite the current internally stored array from the passed encoded value by calling the
+                        <code>listboxValueDecoder</code> function.
+                    </td>
+                    <td>
+                        <code>data</code>
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>getAsArray</td>
+                    <td>
+                        Returns the internally stored array of the items.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>Array</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>setFromArray</td>
+                    <td>
+                        Overwrite the current internally stored array with the provided new one. Render and other
+                        methods won't be called.
+                    </td>
+                    <td>
+                        <code>newItems</code> - the array of the new items
+                    </td>
+                    <td>
+                        <code>int</code> - the new length of the listbox
+                    </td>
+                </tr>
+                <tr>
+                    <td>select</td>
+                    <td>
+                        Selects the element in the given position.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>deselect</td>
+                    <td>
+                        Deselects the element in the given position if it is selected.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>selectAll</td>
+                    <td>
+                        Selects all elements in the listbox.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>deselect</td>
+                    <td>
+                        Deselects any selected elements.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>getSelected</td>
+                    <td>
+                        Returns the array of the positions of the selected elements.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>Array</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>isSelected</td>
+                    <td>
+                        Returns true if the element in the given position is selected.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        <code>jboolean</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getSelectedItems</td>
+                    <td>
+                        Returns the array of the selected elements.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>Array</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getSelectedJQueryItems</td>
+                    <td>
+                        Returns the jQuery collection of the selected elements.
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        <code>jQuery</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>getJQueryItemByIndex</td>
+                    <td>
+                        Returns the jQuery item in the given position.
+                    </td>
+                    <td>
+                        <code>position</code> - the position
+                    </td>
+                    <td>
+                        <code>jQuery</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>itemWalk</td>
+                    <td>
+                        Calls the provided function with each item one-by-one.
+                        <br>
+                        The current item, its position, its jQuery item and the current jqListbox instance is passed
+                        as parameters.
+                    </td>
+                    <td>
+                        <code>fn</code> - Function to be called
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+                <tr>
+                    <td>selectedWalk</td>
+                    <td>
+                        Calls the provided function with each selected item one-by-one.
+                        <br>
+                        The current item, its position, its jQuery item and the current jqListbox instance is passed
+                        as parameters.
+                    </td>
+                    <td>
+                        <code>fn</code> - Function to be called
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+            </table>
+
+            <h2>Options</h2>
+
+            <p>
+                You can pass several options to the jqListbox plugin on initialization. Check the documentation
+                in the included <a href="jsdoc/jqListbox.html" target="_blank">jsdoc</a>!
+            </p>
+
+            <table class="table table-striped">
+                <tr>
+                    <th>Option</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Default value</th>
+                </tr>
+                <tr>
+                    <td>itemSelector</td>
+                    <td><code>string</code></td>
+                    <td>The jQuery selector used to find your items in your list. The selector will be used as
+                        <code>$(container).find(itemSelector)</code> so you must define it relative to your container.
+                    </td>
+                    <td><code>li</code></td>
+                </tr>
+                <tr>
+                    <td>targetInput</td>
+                    <td><code>string|boolean</code></td>
+                    <td>The jQuery selector used to find your target input (where the final value of your listbox will
+                        be set). Set this option to false to disable the automatic value setting.
+                    </td>
+                    <td><code>#listbox-value</code></td>
+                </tr>
+                <tr>
+                    <td>initialValues</td>
+                    <td><code>Array|boolean</code></td>
+                    <td>An array of your initial values to be pre-set when initializing the listbox. False by default -
+                        no initial values will be set.
+                    </td>
+                    <td><code>false</code></td>
+                </tr>
+                <tr>
+                    <td>initialEncodedValues</td>
+                    <td><code>string|boolean</code></td>
+                    <td>An array of your encoded initial values to be pre-set when initializing the listbox.
+                        This must be a string compatible with your decoder. False by default - no initial values will be
+                        set.
+                    </td>
+                    <td><code>false</code></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="bg-info">
+                        If initialValues is false and initialEncodedValues is false then jqListbox will try to pre-set
+                        your
+                        values from your targetInput: if this option is not false and your input contains some encoded
+                        elements
+                        jqListbox will set the elements from there. So the order of this is:
+                        <br>
+                        <code>initialValues &gt; initialEncodedValues &gt; targetInput &gt; empty listbox</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>selectedClass</td>
+                    <td><code>string|boolean</code></td>
+                    <td>
+                        A class name used on selected items. jqListbox by default puts this class on your items when
+                        selecting.
+                        Set this option to false to disable this functionality.
+                    </td>
+                    <td><code>selected</code></td>
+                </tr>
+                <tr>
+                    <td>autoSelectOnClick</td>
+                    <td><code>boolean</code></td>
+                    <td>
+                        If true then items will be automatically selected on a <code>click</code> event.
+                    </td>
+                    <td><code>true</code></td>
+                </tr>
+                <tr>
+                    <td>multiselect</td>
+                    <td><code>boolean</code></td>
+                    <td>
+                        If true multiple selection is allowed.
+                    </td>
+                    <td><code>true</code></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="bg-primary">
+                        <strong>CALLBACKS</strong>
+                        <br>
+                        Check out the signatures of the methods in the included <a href="jsdoc/jqListbox.html"
+                                                                                   target="_blank" style="color: #fff;">JSDoc</a>!
+                    </td>
+                </tr>
+                <tr>
+                    <td>itemRenderer</td>
+                    <td><code>Function</code></td>
+                    <td>
+                        Function to be used when rendering items. The current rendered item, its position and the
+                        jqListbox instance is passed as parameters. You should return a string or a jQuery object
+                        from this function.
+                    </td>
+                    <td>
+<pre style="text-align: left;">
+function (item, pos, jqListbox) {
+   return '&lt;li&gt;' + item + '&lt;/li&gt;';
+}
+</pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>listboxValueEncoder</td>
+                    <td><code>Function</code></td>
+                    <td>
+                        Function used when rendering the output of your listbox. You should return a string
+                        from this function (which can be set in your targetInput for example. The array of items
+                        will be passed as parameter.
+                    </td>
+                    <td>
+<pre style="text-align: left;">
+function (items) {
+   return JSON.stringify(items);
+}
+</pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>listboxValueDecoder</td>
+                    <td><code>Function</code></td>
+                    <td>
+                        Function used when decoding output values (transforming back to array).
+                    </td>
+                    <td>
+<pre style="text-align: left;">
+function (values) {
+    if (values.length &gt; 0) {
+       return JSON.parse(values);
+    }
+    return [];
+}
+</pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>onBeforeInit</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before initializing the jqListbox. The current jqListbox instance is
+                        passed as parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onAfterInit</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after initializing the jqListbox. The current jqListbox instance is
+                        passed as parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onBeforeItemInsert</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before an element or multiple elements are inserted to the listbox.
+                        The to-be-inserted element(s) will be passed as an array (even if only one element is inserted).
+                        Also the current jqListbox instance is passed as a parameter.
+                        <br>
+                        You can modify the to-be-inserted elements by returning a new array from this function.
+                        <br>
+                        You can ignore the insertion by returning a boolean false from this function.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onAfterItemInsert</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after an element or multiple elements are inserted to the listbox.
+                        The to-be-inserted element(s) will be passed as an array (even if only one element is inserted).
+                        Also the current jqListbox instance is passed as a parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onBeforeItemUpdate</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before an element or multiple elements are updated in the listbox.
+                        The to-be-updated element(s) will be passed as an array (even if only one element is updated).
+                        <br>
+                        The new (updated elements will be passed as an array.
+                        <br>
+                        Also the current jqListbox instance is passed as a parameter.
+                        <br>
+                        You can modify the updated elements by returning a new array from this function (so you can
+                        change the target values).
+                        <br>
+                        You can ignore the update by returning a boolean false from this function.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onAfterItemUpdate</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after an element or multiple elements are updated in the listbox.
+                        <br>
+                        The to-be-updated element(s) will be passed as an array (even if only one element is updated).
+                        <br>
+                        The new (updated elements will be passed as an array.
+                        <br>
+                        Also the current jqListbox instance is passed as a parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onBeforeItemRemove</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before an element or multiple elements are removed from the listbox.
+                        The to-be-removed element(s) will be passed as an array (even if only one element is removed).
+                        <br>
+                        Also the current jqListbox instance is passed as a parameter.
+                        <br>
+                        You can modify the list of to-be-removed elements by returning a new array from this function
+                        (so you can
+                        change the target values).
+                        <br>
+                        You can ignore the remove by returning a boolean false from this function.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onAfterItemRemove</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after an element or multiple elements are removed from the listbox.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onBeforeClear</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before the clear operation.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                        <br>
+                        You can ignore the remove by returning a boolean false from this function.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onAfterClear</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after the clear operation.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onChanged</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after any type of change: insert, update, remove, clear, movedown or moveup.
+                        <br>
+                        The type of the operation will be passed as parameter.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                        <br>
+                        This method will be called always after the <code>render</code> operation. You can't change
+                        the original operations here (use the onBefore... callbacks for this).
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onBeforeRender</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before the <code>render</code> operation.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                        <br>
+                        Return false from this callback to ignore the whole render logic. If you do this then
+                        no item and output rendering will be done.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onAfterRender</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after the <code>render</code> operation.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+            </table>
+
+            <h3>Callback and method scopes</h3>
+
+            <p>
+                Each callback and method uses the scope of the container element which has the jqListbox instance. It
+                means that <code>$(this)</code> will point
+                to the container jQuery element inside your callback.
+            </p>
+
+<pre>
+&lt;script&gt;
+    $('#price-table').jqListbox({
+        onBeforeAllowed: function (el, id, jqListbox){
+            $(this).remove(); // this will remove the $('#price-table') element!
+        }
+    });
+&lt;/script&gt;
+</pre>
+
+        </div>
+
+    </div>
+
+
+    <hr>
+
+    <footer>
+        <p>jqListbox 1.1</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
