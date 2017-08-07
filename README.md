@@ -9,3 +9,10 @@ The documentation contains a manual and a generated JSDoc. Access it from [GitLa
 
 # Maintenance, upgrades
 The original plugin made in the middle of 2015 and last tested with jQuery 2.1.4. Will do some maintenance later.
+
+# Minify JS
+The following command is used to generate the minified version:
+
+```
+uglifyjs --compress --mangle -- js/jqListbox.plugin-1.1.js > js/jqListbox.plugin-1.1.min.js
+```
