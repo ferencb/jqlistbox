@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/jqListbox.plugin-1.1.js"></script>
+    <script type="text/javascript" src="js/jqListbox.plugin-1.2.js"></script>
 
     <style>
         .info {
@@ -85,7 +85,7 @@
 
             <h2>Quick install</h2>
             <ol>
-                <li>Copy the <code>js/jqListbox.plugin-1.1.js</code> file to your web root (or in a subfolder)</li>
+                <li>Copy the <code>js/jqListbox.plugin-1.2.js</code> file to your web root (or in a subfolder)</li>
                 <li>Include the file after jQuery in your HTML file(s)</li>
             </ol>
 
@@ -209,7 +209,7 @@
             
 <pre>
 &lt;!-- If the plugin found in your /js folder --&gt;    
-&lt;script type="text/javascript" src="js/jqListbox.plugin-1.1.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/jqListbox.plugin-1.2.min.js"&gt;&lt;/script&gt;
 </pre>
 
             <h3>CSS</h3>
@@ -1408,6 +1408,23 @@ function (values) {
                     <td>false</td>
                 </tr>
                 <tr>
+                    <td>onAfterDataChanged</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called after any type of change (insert, update, remove, clear, movedown, moveup and even after setFromArray and init)
+                        but before any render happened. This way you can modify the data after it has just changed.
+                        <br>
+                        The array of current data will be passed as a parameter. This parameter will be an array of objects where the
+                        <code>item</code> property store the actual item while the <code>isSelected</code> property is true if the item is currently selected.
+                        You must return the same structure (objects with <code>item</code> and <code>isSelected</code> properties).
+                        <br>
+                        The type of the operation will be passed as parameter.
+                        <br>
+                        The current jqListbox instance is passed as a parameter.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
                     <td>onChanged</td>
                     <td><code>Function|boolean</code></td>
                     <td>
@@ -1473,7 +1490,7 @@ function (values) {
     <hr>
 
     <footer>
-        <p>jqListbox 1.1</p>
+        <p>jqListbox 1.2</p>
     </footer>
 
 </div>
