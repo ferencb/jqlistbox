@@ -11,5 +11,5 @@ The documentation contains a manual and a generated JSDoc. Access it from [GitLa
 The following command is used to generate the minified version:
 
 ```
-uglifyjs --compress --mangle -- js/jqListbox.plugin-1.1.js > js/jqListbox.plugin-1.1.min.js
+uglifyjs --compress --mangle -- js/jqListbox.plugin-1.2.js > js/jqListbox.plugin-1.2.min.js
 ```

@@ -11,7 +11,7 @@
 <script src="https://code.jquery.com/qunit/qunit-2.4.0.js"></script>
 <script src="js/blanket.min.js"></script>
 <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="js/jqListbox.plugin-1.1.js" data-cover></script>
+<script type="text/javascript" src="js/jqListbox.plugin-1.2.js" data-cover></script>
 <script>
 
     function getUl() {
@@ -1186,6 +1186,69 @@
         assert.equal(el.jqListbox('getItemByIndex', 0), 'test3');
         assert.equal(el.jqListbox('isSelected', 2), false);
         assert.equal(el.jqListbox('isSelected', 0), true);
+    });
+    QUnit.test("Array is not modified if testOnAfterDataChanged is not set", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                100,
+                10,
+                1000
+            ]
+        });
+        el.jqListbox('insert', 20);
+        assert.deepEqual(el.jqListbox('getAsArray'), [100, 10, 1000, 20]);
+    });
+    QUnit.test("Array is modified even after init if testOnAfterDataChanged is set", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                100,
+                10,
+                1000
+            ],
+            onAfterDataChanged: function(itemsData, event, jq) {
+                return itemsData.sort(function(a, b){return b.item - a.item});
+            }
+        });
+        assert.deepEqual(el.jqListbox('getAsArray'), [1000, 100, 10]);
+        el.jqListbox('setFromArray', [1, 2, 3]);
+        assert.deepEqual(el.jqListbox('getAsArray'), [3, 2, 1]);
+    });
+    QUnit.test("Array is modified if testOnAfterDataChanged is set", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                100,
+                10,
+                1000
+            ],
+            onAfterDataChanged: function(itemsData, event, jq) {
+                return itemsData.sort(function(a, b){return b.item - a.item});
+            }
+        });
+        el.jqListbox('insert', 20);
+        assert.deepEqual(el.jqListbox('getAsArray'), [1000, 100, 20, 10]);
+    });
+    QUnit.test("Selected positions reflected during testOnAfterDataChanged", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                100,
+                10,
+                1000
+            ],
+            multiselect: true,
+            onAfterDataChanged: function(itemsData, event, jq) {
+                return itemsData.sort(function(a, b){return b.item - a.item});
+            }
+        });
+        assert.deepEqual(el.jqListbox('getAsArray'), [1000, 100, 10]); // sorted
+        el.jqListbox('select', 2); // 10 is selected
+        el.jqListbox('insert', 20);
+        assert.deepEqual(el.jqListbox('getAsArray'), [1000, 100, 20, 10]);
+        el.jqListbox('select', 2); // 20
+        assert.deepEqual(el.jqListbox('getSelected'), [2, 3]);
     });
     QUnit.test("Duallistbox: can transfer selected element to another listbox with move", function (assert) {
         var el1 = getUl();

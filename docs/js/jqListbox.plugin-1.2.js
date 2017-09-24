@@ -1,6 +1,6 @@
 /**
  * @fileOverview Contains the code of jqListbox plugin
- * @version 1.1
+ * @version 1.2
  * @author vision
  *
  * @namespace jqListbox
@@ -279,6 +279,19 @@
          */
         onAfterClear: false,
         /**
+         * Optional function called after any change in the items but before any rendering functions.
+         * This function can be used to implement custom sorting, filtering, etc before rendering take effect.
+         *
+         * @method onAfterDataChanged
+         * @default false
+         * @this {jQuery} The container jQuery element
+         * @param {array} itemsData Array of objects containing the item in the "item" property and the "isSelected" flag. The same structure must be returned.
+         * @param {string} event The name of the event: insert, update, remove, clear, movedown or moveup.
+         * @param {jqListbox} jqListbox The jqListbox instance
+         * @type {boolean|function}
+         */
+        onAfterDataChanged: false,
+        /**
          * Optional function called after any change in the items.
          * This function will be called after insert, update, remove, clear, movedown and moveup.
          * The change event will be passed as parameter.
@@ -323,6 +336,7 @@
      *
      */
     /* jshint -W055 */
+
     /* jshint -W040 */
     /**
      * @class jqListbox
@@ -438,6 +452,33 @@
             return this.items[pos];
         },
         /**
+         * Calls onAfterDataChanged callback if exists
+         *
+         * @method testOnAfterDataChanged
+         * @memberOf jqListbox
+         */
+        testOnAfterDataChanged: function (event) {
+            if (typeof (this.options.onAfterDataChanged) === "function") {
+                var rawItems = this.items;
+                var itemsData = [];
+                for (var i = 0; i < rawItems.length; i++) {
+                    itemsData.push({
+                        item: rawItems[i],
+                        isSelected: this.isSelected(i) === true
+                    });
+                }
+                var returnedData = this.options.onAfterDataChanged.apply(this.$el, [itemsData, event, this]);
+                this.selectedPositions = [];
+                this.items = [];
+                for (var i = 0; i < returnedData.length; i++) {
+                    this.items.push(returnedData[i].item);
+                    if (returnedData[i].isSelected === true) {
+                        this.selectedPositions.push(i);
+                    }
+                }
+            }
+        },
+        /**
          * Calls onChanged callback if exists
          *
          * @method testOnChanged
@@ -550,6 +591,7 @@
             if (callback !== false && callback.length !== 0) {
                 item = callback[0];
                 this.items.push(item);
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert([item]);
                 this.testOnChanged('insert');
@@ -575,6 +617,7 @@
             if (callback !== false && callback.length !== 0) {
                 item = callback[0];
                 this.items.splice(position, 0, item);
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert([item]);
                 this.testOnChanged('insert');
@@ -596,6 +639,7 @@
             if (callback !== false && callback.length !== 0) {
                 items = callback;
                 this.items = this.items.concat(items);
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert(items);
                 this.testOnChanged('insert');
@@ -621,6 +665,7 @@
             if (callback !== false && callback.length !== 0) {
                 items = callback;
                 this.items.splice.apply(this.items, [position, 0].concat(items));
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert(items);
                 this.testOnChanged('insert');
@@ -647,6 +692,7 @@
                     for (idx = 0; idx < this.selectedPositions.length; idx++) {
                         this.items[this.selectedPositions[idx]] = updatedItem;
                     }
+                    this.testOnAfterDataChanged('update');
                     this.render();
                     this.testOnAfterItemUpdate(this.getSelectedItems(), updatedItem);
                     this.testOnChanged('update');
@@ -679,6 +725,7 @@
                             j = 0;
                         }
                     }
+                    this.testOnAfterDataChanged('update');
                     this.render();
                     this.testOnAfterItemUpdate(this.getSelectedItems(), updatedItems);
                     this.testOnChanged('update');
@@ -709,6 +756,7 @@
                 }
                 updatedItem = updatedItem[0];
                 this.items[position] = updatedItem;
+                this.testOnAfterDataChanged('update');
                 this.render();
                 this.testOnAfterItemUpdate(this.getItemByIndex(position), [updatedItem]);
                 this.testOnChanged('update');
@@ -739,6 +787,7 @@
                     }
                     this.items = tmp.slice();
                     this.selectedPositions = selPos.slice();
+                    this.testOnAfterDataChanged('remove');
                     this.render();
                     this.testOnAfterItemRemove();
                     this.testOnChanged('remove');
@@ -764,6 +813,7 @@
                     this.selectedPositions.splice(selPos, -1);
                 }
                 this.items.splice(position, 1);
+                this.testOnAfterDataChanged('remove');
                 this.render();
                 this.testOnAfterItemRemove();
                 this.testOnChanged('remove');
@@ -810,6 +860,7 @@
                         this.switchElements(tmp[i], tmp[i] - 1);
                     }
                 }
+                this.testOnAfterDataChanged('moveup');
                 this.render();
                 this.testOnChanged('moveup');
             }
@@ -829,6 +880,7 @@
                 } else {
                     this.switchElements(position, position - 1);
                 }
+                this.testOnAfterDataChanged('moveup');
                 this.render();
                 this.testOnChanged('moveup');
             }
@@ -853,6 +905,7 @@
                         this.switchElements(tmp[i], tmp[i] + 1);
                     }
                 }
+                this.testOnAfterDataChanged('movedown');
                 this.render();
                 this.testOnChanged('movedown');
             }
@@ -872,6 +925,7 @@
                 } else {
                     this.switchElements(position, position + 1);
                 }
+                this.testOnAfterDataChanged('movedown');
                 this.render();
                 this.testOnChanged('movedown');
             }
@@ -1066,6 +1120,7 @@
          */
         setFromArray: function (newItems) {
             this.items = newItems.slice();
+            this.testOnAfterDataChanged('setFromArray');
             return this.items.length;
         },
         /**

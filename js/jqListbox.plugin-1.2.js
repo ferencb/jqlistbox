@@ -1,331 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Source: jqListbox.plugin-1.1.js</title>
-    
-    
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
-    <script src="scripts/jquery.min.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
-    
-    
-    <script>
-    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true}};
-    </script>
-    
-
-    
-</head>
-<body>
-<div id="wrap" class="clearfix">
-    
-<div class="navigation">
-    <h3 class="applicationName"><a href="index.html"></a></h3>
-
-    <div class="search">
-        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
-    </div>
-    <ul class="list">
-    
-        <li class="item" data-name="jqListbox">
-            <span class="title">
-                <a href="jqListbox.html">jqListbox</a>
-                
-                <span class="static">static</span>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="jqListbox.items"><a href="jqListbox.html#items">items</a></li>
-            
-                <li data-name="jqListbox.selectedPositions"><a href="jqListbox.html#selectedPositions">selectedPositions</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="jqListbox.clear"><a href="jqListbox.html#clear">clear</a></li>
-            
-                <li data-name="jqListbox.count"><a href="jqListbox.html#count">count</a></li>
-            
-                <li data-name="jqListbox.countSelected"><a href="jqListbox.html#countSelected">countSelected</a></li>
-            
-                <li data-name="jqListbox.deselect"><a href="jqListbox.html#deselect">deselect</a></li>
-            
-                <li data-name="jqListbox.deselectAll"><a href="jqListbox.html#deselectAll">deselectAll</a></li>
-            
-                <li data-name="jqListbox.getAsArray"><a href="jqListbox.html#getAsArray">getAsArray</a></li>
-            
-                <li data-name="jqListbox.getByIndex"><a href="jqListbox.html#getByIndex">getByIndex</a></li>
-            
-                <li data-name="jqListbox.getJQueryItemByIndex"><a href="jqListbox.html#getJQueryItemByIndex">getJQueryItemByIndex</a></li>
-            
-                <li data-name="jqListbox.getSelectedJQueryItems"><a href="jqListbox.html#getSelectedJQueryItems">getSelectedJQueryItems</a></li>
-            
-                <li data-name="jqListbox.getTargetValue"><a href="jqListbox.html#getTargetValue">getTargetValue</a></li>
-            
-                <li data-name="jqListbox.init"><a href="jqListbox.html#init">init</a></li>
-            
-                <li data-name="jqListbox.initItems"><a href="jqListbox.html#initItems">initItems</a></li>
-            
-                <li data-name="jqListbox.insert"><a href="jqListbox.html#insert">insert</a></li>
-            
-                <li data-name="jqListbox.insertAt"><a href="jqListbox.html#insertAt">insertAt</a></li>
-            
-                <li data-name="jqListbox.insertMulti"><a href="jqListbox.html#insertMulti">insertMulti</a></li>
-            
-                <li data-name="jqListbox.insertMultiAt"><a href="jqListbox.html#insertMultiAt">insertMultiAt</a></li>
-            
-                <li data-name="jqListbox.isSelected"><a href="jqListbox.html#isSelected">isSelected</a></li>
-            
-                <li data-name="jqListbox.itemWalk"><a href="jqListbox.html#itemWalk">itemWalk</a></li>
-            
-                <li data-name="jqListbox.movedown"><a href="jqListbox.html#movedown">movedown</a></li>
-            
-                <li data-name="jqListbox.movedownByIndex"><a href="jqListbox.html#movedownByIndex">movedownByIndex</a></li>
-            
-                <li data-name="jqListbox.moveup"><a href="jqListbox.html#moveup">moveup</a></li>
-            
-                <li data-name="jqListbox.moveup"><a href="jqListbox.html#moveup">moveup</a></li>
-            
-                <li data-name="jqListbox.remove"><a href="jqListbox.html#remove">remove</a></li>
-            
-                <li data-name="jqListbox.removeByIndex"><a href="jqListbox.html#removeByIndex">removeByIndex</a></li>
-            
-                <li data-name="jqListbox.reset"><a href="jqListbox.html#reset">reset</a></li>
-            
-                <li data-name="jqListbox.select"><a href="jqListbox.html#select">select</a></li>
-            
-                <li data-name="jqListbox.selectAll"><a href="jqListbox.html#selectAll">selectAll</a></li>
-            
-                <li data-name="jqListbox.selectedWalk"><a href="jqListbox.html#selectedWalk">selectedWalk</a></li>
-            
-                <li data-name="jqListbox.setFromArray"><a href="jqListbox.html#setFromArray">setFromArray</a></li>
-            
-                <li data-name="jqListbox.setFromTargetValue"><a href="jqListbox.html#setFromTargetValue">setFromTargetValue</a></li>
-            
-                <li data-name="jqListbox.setupAutoClickHandler"><a href="jqListbox.html#setupAutoClickHandler">setupAutoClickHandler</a></li>
-            
-                <li data-name="jqListbox.testOnAfterItemInsert"><a href="jqListbox.html#testOnAfterItemInsert">testOnAfterItemInsert</a></li>
-            
-                <li data-name="jqListbox.testOnAfterItemRemove"><a href="jqListbox.html#testOnAfterItemRemove">testOnAfterItemRemove</a></li>
-            
-                <li data-name="jqListbox.testOnAfterItemUpdate"><a href="jqListbox.html#testOnAfterItemUpdate">testOnAfterItemUpdate</a></li>
-            
-                <li data-name="jqListbox.testOnBeforeItemInsert"><a href="jqListbox.html#testOnBeforeItemInsert">testOnBeforeItemInsert</a></li>
-            
-                <li data-name="jqListbox.testOnBeforeItemRemove"><a href="jqListbox.html#testOnBeforeItemRemove">testOnBeforeItemRemove</a></li>
-            
-                <li data-name="jqListbox.testOnBeforeItemUpdate"><a href="jqListbox.html#testOnBeforeItemUpdate">testOnBeforeItemUpdate</a></li>
-            
-                <li data-name="jqListbox.testOnChanged"><a href="jqListbox.html#testOnChanged">testOnChanged</a></li>
-            
-                <li data-name="jqListbox.transferByIndexMultiTo"><a href="jqListbox.html#transferByIndexMultiTo">transferByIndexMultiTo</a></li>
-            
-                <li data-name="jqListbox.transferByIndexTo"><a href="jqListbox.html#transferByIndexTo">transferByIndexTo</a></li>
-            
-                <li data-name="jqListbox.transferSelectedTo"><a href="jqListbox.html#transferSelectedTo">transferSelectedTo</a></li>
-            
-                <li data-name="jqListbox.update"><a href="jqListbox.html#update">update</a></li>
-            
-                <li data-name="jqListbox.update"><a href="jqListbox.html#update">update</a></li>
-            
-                <li data-name="jqListbox.updateMulti"><a href="jqListbox.html#updateMulti">updateMulti</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-        <li class="item" data-name="jqListbox">
-            <span class="title">
-                <a href="jqListbox.html">jqListbox</a>
-                
-                <span class="static">static</span>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="jqListbox.items"><a href="jqListbox.html#items">items</a></li>
-            
-                <li data-name="jqListbox.selectedPositions"><a href="jqListbox.html#selectedPositions">selectedPositions</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="jqListbox.clear"><a href="jqListbox.html#clear">clear</a></li>
-            
-                <li data-name="jqListbox.count"><a href="jqListbox.html#count">count</a></li>
-            
-                <li data-name="jqListbox.countSelected"><a href="jqListbox.html#countSelected">countSelected</a></li>
-            
-                <li data-name="jqListbox.deselect"><a href="jqListbox.html#deselect">deselect</a></li>
-            
-                <li data-name="jqListbox.deselectAll"><a href="jqListbox.html#deselectAll">deselectAll</a></li>
-            
-                <li data-name="jqListbox.getAsArray"><a href="jqListbox.html#getAsArray">getAsArray</a></li>
-            
-                <li data-name="jqListbox.getByIndex"><a href="jqListbox.html#getByIndex">getByIndex</a></li>
-            
-                <li data-name="jqListbox.getJQueryItemByIndex"><a href="jqListbox.html#getJQueryItemByIndex">getJQueryItemByIndex</a></li>
-            
-                <li data-name="jqListbox.getSelectedJQueryItems"><a href="jqListbox.html#getSelectedJQueryItems">getSelectedJQueryItems</a></li>
-            
-                <li data-name="jqListbox.getTargetValue"><a href="jqListbox.html#getTargetValue">getTargetValue</a></li>
-            
-                <li data-name="jqListbox.init"><a href="jqListbox.html#init">init</a></li>
-            
-                <li data-name="jqListbox.initItems"><a href="jqListbox.html#initItems">initItems</a></li>
-            
-                <li data-name="jqListbox.insert"><a href="jqListbox.html#insert">insert</a></li>
-            
-                <li data-name="jqListbox.insertAt"><a href="jqListbox.html#insertAt">insertAt</a></li>
-            
-                <li data-name="jqListbox.insertMulti"><a href="jqListbox.html#insertMulti">insertMulti</a></li>
-            
-                <li data-name="jqListbox.insertMultiAt"><a href="jqListbox.html#insertMultiAt">insertMultiAt</a></li>
-            
-                <li data-name="jqListbox.isSelected"><a href="jqListbox.html#isSelected">isSelected</a></li>
-            
-                <li data-name="jqListbox.itemWalk"><a href="jqListbox.html#itemWalk">itemWalk</a></li>
-            
-                <li data-name="jqListbox.movedown"><a href="jqListbox.html#movedown">movedown</a></li>
-            
-                <li data-name="jqListbox.movedownByIndex"><a href="jqListbox.html#movedownByIndex">movedownByIndex</a></li>
-            
-                <li data-name="jqListbox.moveup"><a href="jqListbox.html#moveup">moveup</a></li>
-            
-                <li data-name="jqListbox.moveup"><a href="jqListbox.html#moveup">moveup</a></li>
-            
-                <li data-name="jqListbox.remove"><a href="jqListbox.html#remove">remove</a></li>
-            
-                <li data-name="jqListbox.removeByIndex"><a href="jqListbox.html#removeByIndex">removeByIndex</a></li>
-            
-                <li data-name="jqListbox.reset"><a href="jqListbox.html#reset">reset</a></li>
-            
-                <li data-name="jqListbox.select"><a href="jqListbox.html#select">select</a></li>
-            
-                <li data-name="jqListbox.selectAll"><a href="jqListbox.html#selectAll">selectAll</a></li>
-            
-                <li data-name="jqListbox.selectedWalk"><a href="jqListbox.html#selectedWalk">selectedWalk</a></li>
-            
-                <li data-name="jqListbox.setFromArray"><a href="jqListbox.html#setFromArray">setFromArray</a></li>
-            
-                <li data-name="jqListbox.setFromTargetValue"><a href="jqListbox.html#setFromTargetValue">setFromTargetValue</a></li>
-            
-                <li data-name="jqListbox.setupAutoClickHandler"><a href="jqListbox.html#setupAutoClickHandler">setupAutoClickHandler</a></li>
-            
-                <li data-name="jqListbox.testOnAfterItemInsert"><a href="jqListbox.html#testOnAfterItemInsert">testOnAfterItemInsert</a></li>
-            
-                <li data-name="jqListbox.testOnAfterItemRemove"><a href="jqListbox.html#testOnAfterItemRemove">testOnAfterItemRemove</a></li>
-            
-                <li data-name="jqListbox.testOnAfterItemUpdate"><a href="jqListbox.html#testOnAfterItemUpdate">testOnAfterItemUpdate</a></li>
-            
-                <li data-name="jqListbox.testOnBeforeItemInsert"><a href="jqListbox.html#testOnBeforeItemInsert">testOnBeforeItemInsert</a></li>
-            
-                <li data-name="jqListbox.testOnBeforeItemRemove"><a href="jqListbox.html#testOnBeforeItemRemove">testOnBeforeItemRemove</a></li>
-            
-                <li data-name="jqListbox.testOnBeforeItemUpdate"><a href="jqListbox.html#testOnBeforeItemUpdate">testOnBeforeItemUpdate</a></li>
-            
-                <li data-name="jqListbox.testOnChanged"><a href="jqListbox.html#testOnChanged">testOnChanged</a></li>
-            
-                <li data-name="jqListbox.transferByIndexMultiTo"><a href="jqListbox.html#transferByIndexMultiTo">transferByIndexMultiTo</a></li>
-            
-                <li data-name="jqListbox.transferByIndexTo"><a href="jqListbox.html#transferByIndexTo">transferByIndexTo</a></li>
-            
-                <li data-name="jqListbox.transferSelectedTo"><a href="jqListbox.html#transferSelectedTo">transferSelectedTo</a></li>
-            
-                <li data-name="jqListbox.update"><a href="jqListbox.html#update">update</a></li>
-            
-                <li data-name="jqListbox.update"><a href="jqListbox.html#update">update</a></li>
-            
-                <li data-name="jqListbox.updateMulti"><a href="jqListbox.html#updateMulti">updateMulti</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-        <li class="item" data-name="jqListbox.options">
-            <span class="title">
-                <a href="jqListbox.options.html">jqListbox.options</a>
-                
-                <span class="static">static</span>
-                
-            </span>
-            <ul class="members itemMembers">
-            
-            <span class="subtitle">Members</span>
-            
-                <li data-name="jqListbox.options.autoSelectOnClick"><a href="jqListbox.options.html#autoSelectOnClick">autoSelectOnClick</a></li>
-            
-                <li data-name="jqListbox.options.initialEncodedValues"><a href="jqListbox.options.html#initialEncodedValues">initialEncodedValues</a></li>
-            
-                <li data-name="jqListbox.options.initialValues"><a href="jqListbox.options.html#initialValues">initialValues</a></li>
-            
-                <li data-name="jqListbox.options.itemSelector"><a href="jqListbox.options.html#itemSelector">itemSelector</a></li>
-            
-                <li data-name="jqListbox.options.multiselect"><a href="jqListbox.options.html#multiselect">multiselect</a></li>
-            
-                <li data-name="jqListbox.options.selectedClass"><a href="jqListbox.options.html#selectedClass">selectedClass</a></li>
-            
-                <li data-name="jqListbox.options.targetInput"><a href="jqListbox.options.html#targetInput">targetInput</a></li>
-            
-            </ul>
-            <ul class="typedefs itemMembers">
-            
-            </ul>
-            <ul class="methods itemMembers">
-            
-            <span class="subtitle">Methods</span>
-            
-                <li data-name="jqListbox.options.itemRenderer"><a href="jqListbox.options.html#itemRenderer">itemRenderer</a></li>
-            
-                <li data-name="jqListbox.options.listboxValueDecoder"><a href="jqListbox.options.html#listboxValueDecoder">listboxValueDecoder</a></li>
-            
-                <li data-name="jqListbox.options.listboxValueEncoder"><a href="jqListbox.options.html#listboxValueEncoder">listboxValueEncoder</a></li>
-            
-            </ul>
-            <ul class="events itemMembers">
-            
-            </ul>
-        </li>
-    
-    </ul>
-</div>
-    <div class="main">
-        <h1 class="page-title" data-filename="jqListbox.plugin-1.1.js.html">Source: jqListbox.plugin-1.1.js</h1>
-        
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source "><code>/**
+/**
  * @fileOverview Contains the code of jqListbox plugin
- * @version 1.1
+ * @version 1.2
  * @author vision
  *
  * @namespace jqListbox
@@ -441,7 +116,7 @@
         multiselect: true,
         /**
          * Function called when an item is rendered.
-         * By default this returning a list item (&lt;li>) containing your raw item Object.
+         * By default this returning a list item (<li>) containing your raw item Object.
          * You can override this function to render your item.
          *
          * @memberOf jqListbox.options
@@ -453,7 +128,7 @@
          * @type {function}
          */
         itemRenderer: function (item, pos, jqListbox) {
-            return '&lt;li>' + item + '&lt;/li>';
+            return '<li>' + item + '</li>';
         },
         /**
          * Function called when the final value of the listbox is rendered (for example when the value of a
@@ -604,6 +279,19 @@
          */
         onAfterClear: false,
         /**
+         * Optional function called after any change in the items but before any rendering functions.
+         * This function can be used to implement custom sorting, filtering, etc before rendering take effect.
+         *
+         * @method onAfterDataChanged
+         * @default false
+         * @this {jQuery} The container jQuery element
+         * @param {array} itemsData Array of objects containing the item in the "item" property and the "isSelected" flag. The same structure must be returned.
+         * @param {string} event The name of the event: insert, update, remove, clear, movedown or moveup.
+         * @param {jqListbox} jqListbox The jqListbox instance
+         * @type {boolean|function}
+         */
+        onAfterDataChanged: false,
+        /**
          * Optional function called after any change in the items.
          * This function will be called after insert, update, remove, clear, movedown and moveup.
          * The change event will be passed as parameter.
@@ -648,6 +336,7 @@
      *
      */
     /* jshint -W055 */
+
     /* jshint -W040 */
     /**
      * @class jqListbox
@@ -763,6 +452,33 @@
             return this.items[pos];
         },
         /**
+         * Calls onAfterDataChanged callback if exists
+         *
+         * @method testOnAfterDataChanged
+         * @memberOf jqListbox
+         */
+        testOnAfterDataChanged: function (event) {
+            if (typeof (this.options.onAfterDataChanged) === "function") {
+                var rawItems = this.items;
+                var itemsData = [];
+                for (var i = 0; i < rawItems.length; i++) {
+                    itemsData.push({
+                        item: rawItems[i],
+                        isSelected: this.isSelected(i) === true
+                    });
+                }
+                var returnedData = this.options.onAfterDataChanged.apply(this.$el, [itemsData, event, this]);
+                this.selectedPositions = [];
+                this.items = [];
+                for (var i = 0; i < returnedData.length; i++) {
+                    this.items.push(returnedData[i].item);
+                    if (returnedData[i].isSelected === true) {
+                        this.selectedPositions.push(i);
+                    }
+                }
+            }
+        },
+        /**
          * Calls onChanged callback if exists
          *
          * @method testOnChanged
@@ -875,6 +591,7 @@
             if (callback !== false && callback.length !== 0) {
                 item = callback[0];
                 this.items.push(item);
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert([item]);
                 this.testOnChanged('insert');
@@ -900,6 +617,7 @@
             if (callback !== false && callback.length !== 0) {
                 item = callback[0];
                 this.items.splice(position, 0, item);
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert([item]);
                 this.testOnChanged('insert');
@@ -921,6 +639,7 @@
             if (callback !== false && callback.length !== 0) {
                 items = callback;
                 this.items = this.items.concat(items);
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert(items);
                 this.testOnChanged('insert');
@@ -946,6 +665,7 @@
             if (callback !== false && callback.length !== 0) {
                 items = callback;
                 this.items.splice.apply(this.items, [position, 0].concat(items));
+                this.testOnAfterDataChanged('insert');
                 this.render();
                 this.testOnAfterItemInsert(items);
                 this.testOnChanged('insert');
@@ -969,9 +689,10 @@
                 updatedItem = this.testOnBeforeItemUpdate(this.getSelectedItems(), [updatedItem]);
                 if (updatedItem !== false) {
                     updatedItem = updatedItem[0];
-                    for (idx = 0; idx &lt; this.selectedPositions.length; idx++) {
+                    for (idx = 0; idx < this.selectedPositions.length; idx++) {
                         this.items[this.selectedPositions[idx]] = updatedItem;
                     }
+                    this.testOnAfterDataChanged('update');
                     this.render();
                     this.testOnAfterItemUpdate(this.getSelectedItems(), updatedItem);
                     this.testOnChanged('update');
@@ -996,7 +717,7 @@
             if (this.selectedPositions.length > 0 && updatedItems.length > 0) {
                 updatedItems = this.testOnBeforeItemUpdate(this.getSelectedItems(), updatedItems);
                 if (updatedItems !== false) {
-                    for (idx = 0; idx &lt; this.selectedPositions.length; idx++) {
+                    for (idx = 0; idx < this.selectedPositions.length; idx++) {
                         updatedItem = updatedItems[j];
                         this.items[this.selectedPositions[idx]] = updatedItem;
                         j++;
@@ -1004,6 +725,7 @@
                             j = 0;
                         }
                     }
+                    this.testOnAfterDataChanged('update');
                     this.render();
                     this.testOnAfterItemUpdate(this.getSelectedItems(), updatedItems);
                     this.testOnChanged('update');
@@ -1023,10 +745,10 @@
          * @return {Object} The updated item
          */
         updateAt: function (updatedItem, position) {
-            if (position &lt; 0) {
+            if (position < 0) {
                 position = this.items.length + position;
             }
-            if (position >= 0 && position &lt; this.items.length) {
+            if (position >= 0 && position < this.items.length) {
 
                 updatedItem = this.testOnBeforeItemUpdate([this.getItemByIndex(position)], [updatedItem]);
                 if (updatedItem === false) {
@@ -1034,6 +756,7 @@
                 }
                 updatedItem = updatedItem[0];
                 this.items[position] = updatedItem;
+                this.testOnAfterDataChanged('update');
                 this.render();
                 this.testOnAfterItemUpdate(this.getItemByIndex(position), [updatedItem]);
                 this.testOnChanged('update');
@@ -1053,7 +776,7 @@
             if (this.selectedPositions.length > 0) {
                 callback = this.testOnBeforeItemRemove(this.selectedPositions);
                 if (callback !== false && callback.length !== 0) {
-                    for (idx = 0; idx &lt; this.items.length; idx++) {
+                    for (idx = 0; idx < this.items.length; idx++) {
                         pos = parseInt(idx, 10);
                         if (callback.indexOf(pos) === -1) {
                             tmp.push(this.items[pos]);
@@ -1064,6 +787,7 @@
                     }
                     this.items = tmp.slice();
                     this.selectedPositions = selPos.slice();
+                    this.testOnAfterDataChanged('remove');
                     this.render();
                     this.testOnAfterItemRemove();
                     this.testOnChanged('remove');
@@ -1089,6 +813,7 @@
                     this.selectedPositions.splice(selPos, -1);
                 }
                 this.items.splice(position, 1);
+                this.testOnAfterDataChanged('remove');
                 this.render();
                 this.testOnAfterItemRemove();
                 this.testOnChanged('remove');
@@ -1131,10 +856,11 @@
                     this.switchElements(this.selectedPositions[0], this.selectedPositions[0] - 1);
                 } else {
                     tmp = this.selectedPositions.slice();
-                    for (i = 0; i &lt; tmp.length; i++) {
+                    for (i = 0; i < tmp.length; i++) {
                         this.switchElements(tmp[i], tmp[i] - 1);
                     }
                 }
+                this.testOnAfterDataChanged('moveup');
                 this.render();
                 this.testOnChanged('moveup');
             }
@@ -1148,12 +874,13 @@
          * @memberOf jqListbox
          */
         moveupByIndex: function (position) {
-            if (position &lt; this.items.length) {
+            if (position < this.items.length) {
                 if (position === 0) {
                     this.shiftElementsUp();
                 } else {
                     this.switchElements(position, position - 1);
                 }
+                this.testOnAfterDataChanged('moveup');
                 this.render();
                 this.testOnChanged('moveup');
             }
@@ -1174,10 +901,11 @@
                 } else {
                     tmp = this.selectedPositions.slice();
                     tmp.reverse();
-                    for (i = 0; i &lt; tmp.length; i++) {
+                    for (i = 0; i < tmp.length; i++) {
                         this.switchElements(tmp[i], tmp[i] + 1);
                     }
                 }
+                this.testOnAfterDataChanged('movedown');
                 this.render();
                 this.testOnChanged('movedown');
             }
@@ -1191,12 +919,13 @@
          * @memberOf jqListbox
          */
         movedownByIndex: function (position) {
-            if (position &lt; this.items.length) {
+            if (position < this.items.length) {
                 if (position === this.items.length - 1) {
                     this.shiftElementsDown();
                 } else {
                     this.switchElements(position, position + 1);
                 }
+                this.testOnAfterDataChanged('movedown');
                 this.render();
                 this.testOnChanged('movedown');
             }
@@ -1242,7 +971,7 @@
                 if (this.selectedPositions.length > 0) {
                     // Selected elements - decrease every position by one
                     tmpPos = [];
-                    for (i = 0; i &lt; this.selectedPositions.length; i++) {
+                    for (i = 0; i < this.selectedPositions.length; i++) {
                         if (this.selectedPositions[i] === 0) {
                             tmpPos.push(this.items.length - 1);
                         } else {
@@ -1270,7 +999,7 @@
                     } else {
                         tmpPos.push(this.selectedPositions[this.selectedPositions.length - 1] + 1);
                     }
-                    for (i = 0; i &lt; this.selectedPositions.length - 1; i++) {
+                    for (i = 0; i < this.selectedPositions.length - 1; i++) {
                         //if (this.selectedPositions[i] === this.items.length - 1) {
                         //    tmpPos.push(0);
                         //} else {
@@ -1296,7 +1025,7 @@
         transferSelectedTo: function (listbox, copy) {
             if (this.countSelected() > 0) {
                 var items = this.getSelectedItems(), i = 0;
-                for (i = 0; i &lt; items.length; i++) {
+                for (i = 0; i < items.length; i++) {
                     listbox.jqListbox('insert', items[i]);
                 }
                 if (copy !== true) {
@@ -1317,7 +1046,7 @@
          * @memberOf jqListbox
          */
         transferByIndexTo: function (listbox, index, copy) {
-            if (index >= 0 && index &lt; this.count()) {
+            if (index >= 0 && index < this.count()) {
                 listbox.jqListbox('insert', this.getItemByIndex(index));
                 if (copy !== true) {
                     this.removeByIndex(index);
@@ -1345,13 +1074,13 @@
                 if (copy !== true) {
                     // Move
                     // We must decrease the index on every iteration because of removal of preceding elements
-                    for (i = 0; i &lt; indices.length; i++) {
+                    for (i = 0; i < indices.length; i++) {
                         listbox.jqListbox('insert', this.getItemByIndex(indices[i] - i));
                         this.removeByIndex(indices[i] - i);
                     }
                 } else {
                     // Copy
-                    for (i = 0; i &lt; indices.length; i++) {
+                    for (i = 0; i < indices.length; i++) {
                         listbox.jqListbox('insert', this.getItemByIndex(indices[i]));
                     }
                 }
@@ -1391,6 +1120,7 @@
          */
         setFromArray: function (newItems) {
             this.items = newItems.slice();
+            this.testOnAfterDataChanged('setFromArray');
             return this.items.length;
         },
         /**
@@ -1439,7 +1169,7 @@
          * @param {int} position
          */
         select: function (position) {
-            if (this.selectedPositions.indexOf(position) === -1 && position &lt; this.items.length) {
+            if (this.selectedPositions.indexOf(position) === -1 && position < this.items.length) {
                 if (this.options.multiselect === false && this.selectedPositions.length > 0) {
                     this.selectedPositions = [];
                 }
@@ -1473,7 +1203,7 @@
             var i;
             if (this.options.multiselect === true) {
                 this.selectedPositions = [];
-                for (i = 0; i &lt; this.items.length; i++) {
+                for (i = 0; i < this.items.length; i++) {
                     this.selectedPositions.push(i);
                 }
                 this.selectedPositions.sort();
@@ -1570,7 +1300,7 @@
             }
 
             this.$el.empty();
-            for (i = 0; i &lt; this.items.length; i++) {
+            for (i = 0; i < this.items.length; i++) {
                 i = parseInt(i, 10);
                 rendered = this.options.itemRenderer.apply(this.$el, [this.items[i], parseInt(i, 10), this]);
                 li = $(rendered).appendTo(this.$el);
@@ -1594,7 +1324,7 @@
         itemWalk: function (fn) {
             var i;
             if (this.items.length > 0) {
-                for (i = 0; i &lt; this.items.length; i++) {
+                for (i = 0; i < this.items.length; i++) {
                     fn.apply(this.$el, [this.items[i], i, this.$el.find(this.options.itemSelector).eq(i), this]);
                 }
             }
@@ -1612,31 +1342,11 @@
             var jqItems, i, pos;
             if (this.selectedPositions.length > 0) {
                 jqItems = this.$el.find(this.options.itemSelector);
-                for (i = 0; i &lt; this.selectedPositions.length; i++) {
+                for (i = 0; i < this.selectedPositions.length; i++) {
                     pos = this.selectedPositions[i];
                     fn.apply(this.$el, [this.items[pos], pos, jqItems.eq(pos), this]);
                 }
             }
         }
     };
-}(jQuery));</code></pre>
-        </article>
-    </section>
-
-
-
-
-
-
-        
-
-        <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Sep 29 2015 22:11:28 GMT+0200 (CEST)
-        </footer>
-    </div>
-</div>
-<script>prettyPrint();</script>
-<script src="scripts/linenumber.js"></script>
-<script src="scripts/main.js"></script>
-</body>
-</html>
+}(jQuery));
