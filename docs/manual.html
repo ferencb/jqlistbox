@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/jqListbox.plugin-1.2.js"></script>
+    <script type="text/javascript" src="js/jqListbox.plugin-1.3.js"></script>
 
     <style>
         .info {
@@ -68,8 +68,6 @@
 		<p>		
 			<a href="https://github.com/ferencb/jqlistbox">GitHub repository</a>
 			<br>
-			<a href="jsdoc/jqListbox.html">JSDOC</a>
-			<br>
 			<a href="unittest.html">Unit test</a>
 		</p>
     </div>
@@ -79,13 +77,9 @@
     <div class="row">
         <div class="col-md-12">
 
-            <h2>API Documentation</h2>
-
-            <p>You can find an API-style documentation <a href="jsdoc/jqListbox.html" target="_blank">here</a>.</p>
-
             <h2>Quick install</h2>
             <ol>
-                <li>Copy the <code>js/jqListbox.plugin-1.2.js</code> file to your web root (or in a subfolder)</li>
+                <li>Copy the <code>js/jqListbox.plugin-1.3.js</code> file to your web root (or in a subfolder)</li>
                 <li>Include the file after jQuery in your HTML file(s)</li>
             </ol>
 
@@ -209,7 +203,7 @@
             
 <pre>
 &lt;!-- If the plugin found in your /js folder --&gt;    
-&lt;script type="text/javascript" src="js/jqListbox.plugin-1.2.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/jqListbox.plugin-1.3.min.js"&gt;&lt;/script&gt;
 </pre>
 
             <h3>CSS</h3>
@@ -278,8 +272,7 @@
                 <div class="panel-body">
                     Through this documentation we will setup a basic list with <code>ul</code>
                     and <code>li</code> tags wrapped under a container <code>div</code>. Watch out for comments and
-                    descriptions and check the options section and the included
-                    <a href="jsdoc/jqListbox.html" target="_blank">jsdoc</a> for a full reference!
+                    descriptions. Check the inline documentation in the source file for reference!
                 </div>
             </div>
             <br>
@@ -589,16 +582,12 @@
                 There are a lot of callbacks triggered by different events: for example you can fire up some custom
                 logic before a new element is inserted or elements are updated. Also you can change the newly inserted
                 element before the insertion, etc. There are a lot of possibilities in these callbacks!
-                <br>
-                Check out the options below or the JSDoc!
             </p>
 
             <h2>Methods</h2>
 
             <p>
-                You can use the following methods in jqListbox. Also check out the options below and the included
-                detailed
-                <a href="jsdoc/jqListbox.html" target="_blank">JSDoc</a>!
+                You can use the following methods in jqListbox.
             </p>
 
             <p>
@@ -606,7 +595,7 @@
                 intended for internal use only - for example you won't need to call setupAutoClickHandler by hand.
                 <br>
                 I'm listing only the methods intended for use in your code - however you can check all of the methods
-                and the full API-like reference in the JSDoc.
+                in the documented source file.
             </p>
 
 
@@ -1146,8 +1135,7 @@
             <h2>Options</h2>
 
             <p>
-                You can pass several options to the jqListbox plugin on initialization. Check the documentation
-                in the included <a href="jsdoc/jqListbox.html" target="_blank">jsdoc</a>!
+                You can pass several options to the jqListbox plugin on initialization.
             </p>
 
             <table class="table table-striped">
@@ -1230,9 +1218,6 @@
                 <tr>
                     <td colspan="4" class="bg-primary">
                         <strong>CALLBACKS</strong>
-                        <br>
-                        Check out the signatures of the methods in the included <a href="jsdoc/jqListbox.html"
-                                                                                   target="_blank" style="color: #fff;">JSDoc</a>!
                     </td>
                 </tr>
                 <tr>
@@ -1440,6 +1425,30 @@ function (values) {
                     <td>false</td>
                 </tr>
                 <tr>
+                    <td>onBeforeSelect</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before the <code>select</code> operation.
+                        <br>
+                        The position of the want-to-be selected item and the current jqListbox instance is passed as a parameter.
+                        <br>
+                        Return false from this callback to ignore the whole select logic.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>onBeforeDeSelect</td>
+                    <td><code>Function|boolean</code></td>
+                    <td>
+                        Function called before the <code>deselect</code> operation.
+                        <br>
+                        The position of the want-to-be deselected item and the current jqListbox instance is passed as a parameter.
+                        <br>
+                        Return false from this callback to ignore the whole deselect logic.
+                    </td>
+                    <td>false</td>
+                </tr>
+                <tr>
                     <td>onBeforeRender</td>
                     <td><code>Function|boolean</code></td>
                     <td>
@@ -1490,7 +1499,7 @@ function (values) {
     <hr>
 
     <footer>
-        <p>jqListbox 1.2</p>
+        <p>jqListbox 1.3</p>
     </footer>
 
 </div>

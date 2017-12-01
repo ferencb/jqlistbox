@@ -11,7 +11,7 @@
 <script src="https://code.jquery.com/qunit/qunit-2.4.0.js"></script>
 <script src="js/blanket.min.js"></script>
 <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="js/jqListbox.plugin-1.2.js" data-cover></script>
+<script type="text/javascript" src="js/jqListbox.plugin-1.3.js" data-cover></script>
 <script>
 
     function getUl() {
@@ -272,6 +272,85 @@
         el.jqListbox('deselect', 1);
         assert.deepEqual(el.jqListbox('getSelected'), []);
         assert.equal(el.jqListbox('isSelected', 1), false);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+    });
+
+    QUnit.test("select still selects item by position if onBeforeSelect not returns false", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            onBeforeSelect: function(position, jqListbox) {
+                return true;
+            }
+        });
+        el.jqListbox('select', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), [1]);
+        assert.equal(el.jqListbox('isSelected', 1), true);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+    });
+
+    QUnit.test("select does not select item by position if onBeforeSelect returns false", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            onBeforeSelect: function(position, jqListbox) {
+                return false;
+            }
+        });
+        el.jqListbox('select', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), []);
+        assert.equal(el.jqListbox('isSelected', 1), false);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+    });
+
+
+    QUnit.test("deselect still deselects item by position if onBeforeDeSelect not returns false", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            onBeforeDeSelect: function(position, jqListbox) {
+                return true;
+            }
+        });
+        el.jqListbox('select', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), [1]);
+        el.jqListbox('deselect', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), []);
+        assert.equal(el.jqListbox('isSelected', 1), false);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+    });
+
+    QUnit.test("deselect does not deselect item by position if onBeforeDeSelect returns false", function (assert) {
+        var el = getUl();
+        el.jqListbox({
+            initialValues: [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ],
+            onBeforeDeSelect: function(position, jqListbox) {
+                return false;
+            }
+        });
+        el.jqListbox('select', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), [1]);
+        assert.equal(el.jqListbox('isSelected', 1), true);
+        assert.equal(el.jqListbox('isSelected', 2), false);
+        el.jqListbox('deselect', 1);
+        assert.deepEqual(el.jqListbox('getSelected'), [1]);
+        assert.equal(el.jqListbox('isSelected', 1), true);
         assert.equal(el.jqListbox('isSelected', 2), false);
     });
 

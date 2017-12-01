@@ -1,6 +1,6 @@
 /**
  * @fileOverview Contains the code of jqListbox plugin
- * @version 1.2
+ * @version 1.3
  * @author vision
  *
  * @namespace jqListbox
@@ -304,6 +304,30 @@
          * @type {boolean|function}
          */
         onChanged: false,
+        /**
+         * Optional function called before the actual selection has been made.
+         * Return false form your function to avoid selection.
+         *
+         * @method onBeforeSelect
+         * @default false
+         * @this {jQuery} The container jQuery element
+         * @param {int} The position of the element to be selected
+         * @param {jqListbox} jqListbox The jqListbox instance
+         * @type {boolean|function}
+         */
+        onBeforeSelect: false,
+        /**
+         * Optional function called before the actual deselection has been made.
+         * Return false form your function to avoid selection.
+         *
+         * @method onBeforeSelect
+         * @default false
+         * @this {jQuery} The container jQuery element
+         * @param {int} The position of the element to be selected
+         * @param {jqListbox} jqListbox The jqListbox instance
+         * @type {boolean|function}
+         */
+        onBeforeDeSelect: false,
         /**
          * Optional function called before the render step.
          * Return false form your function to avoid rendering logic.
@@ -1170,6 +1194,12 @@
          */
         select: function (position) {
             if (this.selectedPositions.indexOf(position) === -1 && position < this.items.length) {
+                if (typeof (this.options.onBeforeSelect) === "function") {
+                    var test = this.options.onBeforeSelect.apply(this.$el, [position, this]);
+                    if (test === false) {
+                        return false;
+                    }
+                }
                 if (this.options.multiselect === false && this.selectedPositions.length > 0) {
                     this.selectedPositions = [];
                 }
@@ -1189,6 +1219,12 @@
         deselect: function (position) {
             var idx = this.selectedPositions.indexOf(position);
             if (idx > -1) {
+                if (typeof (this.options.onBeforeDeSelect) === "function") {
+                    var test = this.options.onBeforeDeSelect.apply(this.$el, [position, this]);
+                    if (test === false) {
+                        return false;
+                    }
+                }
                 this.selectedPositions.splice(idx, 1);
                 this.render();
             }
