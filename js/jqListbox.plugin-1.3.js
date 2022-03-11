@@ -979,7 +979,7 @@
                         this.selectedPositions.push(pos1);
                     }
                 }
-                this.selectedPositions.sort();
+                this.selectedPositions.sort(function (a, b) { return a - b });
             }
         },
         /**
@@ -1003,7 +1003,7 @@
                         }
                     }
                     this.selectedPositions = tmpPos.slice();
-                    this.selectedPositions.sort();
+                    this.selectedPositions.sort(function (a, b) { return a - b });
                 }
             }
         },
@@ -1031,7 +1031,7 @@
                         //}
                     }
                     this.selectedPositions = tmpPos.slice();
-                    this.selectedPositions.sort();
+                    this.selectedPositions.sort(function (a, b) { return a - b });
                 }
             }
         },
@@ -1204,7 +1204,7 @@
                     this.selectedPositions = [];
                 }
                 this.selectedPositions.push(position);
-                this.selectedPositions.sort();
+                this.selectedPositions.sort(function (a, b) { return a - b });
                 this.render();
             }
         },
@@ -1242,7 +1242,7 @@
                 for (i = 0; i < this.items.length; i++) {
                     this.selectedPositions.push(i);
                 }
-                this.selectedPositions.sort();
+                this.selectedPositions.sort(function (a, b) { return a - b });
                 this.render();
             }
         },
